@@ -20,7 +20,7 @@ namespace nx::fs
     void IFile::Read(u64 offset, void* buf, size_t size)
     {
         u64 sizeRead;
-        ASSERT_OK(fsFileRead(&m_file, offset, buf, size, &sizeRead), "Failed to read file");
+        ASSERT_OK(fsFileRead(&m_file, offset, buf, size, FS_READOPTION_NONE, &sizeRead), "Failed to read file");
         
         if (sizeRead != size)
         {

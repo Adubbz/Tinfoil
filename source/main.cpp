@@ -41,14 +41,12 @@ void userAppExit(void);
 // TODO: Validate NCAs
 // TODO: Verify dumps, ncaids match sha256s, installation succeess, perform proper uninstallation on failure and prior to install
 
-u8* g_framebuf;
-u32 g_framebufWidth;
-u32 g_framebufHeight;
 
 bool g_shouldExit = false;
 
 void userAppInit(void)
 {
+    //consoleInit(NULL);
     if (R_FAILED(ncmextInitialize()))
         fatalSimple(0xBEEF);
 
@@ -104,6 +102,7 @@ void userAppExit(void)
     nsExit();
     nsextExit();
     esExit();
+    consoleExit(NULL);
 }
 
 void markForExit(void)
@@ -118,11 +117,9 @@ int main(int argc, char **argv)
         Result rc = 0;
         tin::ui::ViewManager& manager = tin::ui::ViewManager::Instance();
 
-        gfxInitDefault();
         manager.m_printConsole = consoleInit(NULL);
         LOG_DEBUG("NXLink is active\n");
 
-        g_framebuf = gfxGetFramebuffer(&g_framebufWidth, &g_framebufHeight);
 
         // Create the tinfoil directory and subdirs on the sd card if they don't already exist. 
         // These are used throughout the app without existance checks.
@@ -171,12 +168,9 @@ int main(int argc, char **argv)
             if (kDown)
                 manager.ProcessInput(kDown);
 
-            g_framebuf = gfxGetFramebuffer(&g_framebufWidth, &g_framebufHeight);
-
             manager.Update();
 
-            gfxFlushBuffers();
-            gfxSwapBuffers();
+            consoleUpdate(NULL);
         }
     }
     catch (std::exception& e)
@@ -208,6 +202,6 @@ int main(int argc, char **argv)
         }
     }
 
-    gfxExit();
+    consoleExit(NULL);
     return 0;
 }

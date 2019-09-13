@@ -3,7 +3,6 @@
 extern "C"
 {
 #include <switch/services/hid.h>
-#include <switch/display/gfx.h>
 #include <switch/arm/counter.h>
 #include <switch/kernel/svc.h>
 }
@@ -58,9 +57,7 @@ namespace tin::ui
 
         Result rc = 0;
         printf("Waiting for USB to be ready...\n");
-
-        gfxFlushBuffers();
-        gfxSwapBuffers();
+        consoleUpdate(NULL);
 
         while (true)
         {
@@ -75,14 +72,12 @@ namespace tin::ui
             else if ((rc & 0x3FFFFF) != 0xEA01)
             {
                 // Timeouts are okay, we just want to allow users to escape at this point
-                THROW_FORMAT("Failed to wait for USB to be ready\n"); 
-            }   
+                THROW_FORMAT("Failed to wait for USB to be ready\n");
+            }
         }
 
         printf("USB is ready. Waiting for header...\n");
-        
-        gfxFlushBuffers();
-        gfxSwapBuffers();
+        consoleUpdate(NULL);
 
         TUSHeader header;
         tin::util::USBRead(&header, sizeof(TUSHeader));
@@ -189,7 +184,6 @@ namespace tin::ui
         tin::util::USBCmdManager::SendExitCmd();
         printf("\n Press (B) to return.");
 
-        gfxFlushBuffers();
-        gfxSwapBuffers();
+        consoleUpdate(NULL);
     }
 }

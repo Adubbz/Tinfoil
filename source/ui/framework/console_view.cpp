@@ -12,7 +12,6 @@ namespace tin::ui
 
     void ConsoleView::OnPresented()
     {
-        gfxSetMode(GfxMode_TiledDouble);
         consoleClear();
     }
 

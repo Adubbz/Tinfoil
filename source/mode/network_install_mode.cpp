@@ -134,14 +134,15 @@ namespace tin::ui
 
             // Do this now because otherwise we won't get an opportunity whilst waiting
             // in the loop
-            gfxFlushBuffers();
-            gfxSwapBuffers();
+
 
             while (true)
             {
                 // Break on input pressed
                 hidScanInput();
                 u64 kDown = hidKeysDown(CONTROLLER_P1_AUTO);
+
+                consoleUpdate(NULL);
 
                 if (kDown & KEY_B)
                 {
@@ -285,8 +286,7 @@ namespace tin::ui
         u8 ack = 0;
         tin::network::WaitSendNetworkData(m_clientSocket, &ack, sizeof(u8));
         printf("\n Press (B) to return.");
+        consoleUpdate(NULL);
 
-        gfxFlushBuffers();
-        gfxSwapBuffers();
     }
 }

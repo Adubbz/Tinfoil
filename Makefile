@@ -65,7 +65,7 @@ CXXFLAGS	:= $(CFLAGS) -std=gnu++17 $(CXXFLAGS)
 ASFLAGS	:=	-g $(ARCH)
 LDFLAGS	=	-specs=$(DEVKITPRO)/libnx/switch.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
-LIBS	:= `freetype-config --libs` -lcurl -lz -lnx
+LIBS	:= `freetype-config --libs` -lcurl -lmbedtls -lmbedx509 -lmbedcrypto -lz -lnx
 
 
 
