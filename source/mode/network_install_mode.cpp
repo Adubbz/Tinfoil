@@ -134,8 +134,7 @@ namespace tin::ui
 
             // Do this now because otherwise we won't get an opportunity whilst waiting
             // in the loop
-            gfxFlushBuffers();
-            gfxSwapBuffers();
+            consoleUpdate(NULL);
 
             while (true)
             {
@@ -222,7 +221,7 @@ namespace tin::ui
         tin::ui::ViewManager& manager = tin::ui::ViewManager::Instance();
         ConsoleCheckboxView* prevView;
 
-        if (!(prevView = dynamic_cast<ConsoleCheckboxView*>(manager.GetCurrentView())))
+        if (!(prevView = reinterpret_cast<ConsoleCheckboxView*>(manager.GetCurrentView())))
         {
             throw std::runtime_error("Previous view must be a ConsoleCheckboxView!");
         }
@@ -247,7 +246,7 @@ namespace tin::ui
         tin::ui::ViewManager& manager = tin::ui::ViewManager::Instance();
         ConsoleOptionsView* prevView;
 
-        if (!(prevView = dynamic_cast<ConsoleOptionsView*>(manager.GetCurrentView())))
+        if (!(prevView = reinterpret_cast<ConsoleOptionsView*>(manager.GetCurrentView())))
         {
             throw std::runtime_error("Previous view must be a ConsoleOptionsView!");
         }
@@ -286,7 +285,6 @@ namespace tin::ui
         tin::network::WaitSendNetworkData(m_clientSocket, &ack, sizeof(u8));
         printf("\n Press (B) to return.");
 
-        gfxFlushBuffers();
-        gfxSwapBuffers();
+        consoleUpdate(NULL);
     }
 }

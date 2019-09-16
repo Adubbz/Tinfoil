@@ -1,13 +1,6 @@
 #include "mode/usb_install_mode.hpp"
 
-extern "C"
-{
-#include <switch/services/hid.h>
-#include <switch/display/gfx.h>
-#include <switch/arm/counter.h>
-#include <switch/kernel/svc.h>
-}
-
+#include <switch.h>
 #include <exception>
 #include <sstream>
 #include <stdlib.h>
@@ -20,8 +13,6 @@ extern "C"
 #include "ui/framework/console_view.hpp"
 #include "ui/framework/console_checkbox_view.hpp"
 #include "util/usb_util.hpp"
-#include "nx/ipc/usb_comms_new.h"
-#include "nx/ipc/usb_new.h"
 #include "debug.h"
 #include "error.hpp"
 
@@ -59,8 +50,7 @@ namespace tin::ui
         Result rc = 0;
         printf("Waiting for USB to be ready...\n");
 
-        gfxFlushBuffers();
-        gfxSwapBuffers();
+        consoleUpdate(NULL);
 
         while (true)
         {
@@ -81,8 +71,7 @@ namespace tin::ui
 
         printf("USB is ready. Waiting for header...\n");
         
-        gfxFlushBuffers();
-        gfxSwapBuffers();
+        consoleUpdate(NULL);
 
         TUSHeader header;
         tin::util::USBRead(&header, sizeof(TUSHeader));
@@ -127,7 +116,7 @@ namespace tin::ui
         tin::ui::ViewManager& manager = tin::ui::ViewManager::Instance();
         ConsoleCheckboxView* prevView;
 
-        if (!(prevView = dynamic_cast<ConsoleCheckboxView*>(manager.GetCurrentView())))
+        if (!(prevView = reinterpret_cast<ConsoleCheckboxView*>(manager.GetCurrentView())))
         {
             throw std::runtime_error("Previous view must be a ConsoleCheckboxView!");
         }
@@ -153,7 +142,7 @@ namespace tin::ui
         tin::ui::ViewManager& manager = tin::ui::ViewManager::Instance();
         ConsoleOptionsView* prevView;
 
-        if (!(prevView = dynamic_cast<ConsoleOptionsView*>(manager.GetCurrentView())))
+        if (!(prevView = reinterpret_cast<ConsoleOptionsView*>(manager.GetCurrentView())))
         {
             throw std::runtime_error("Previous view must be a ConsoleOptionsView!");
         }
@@ -189,7 +178,6 @@ namespace tin::ui
         tin::util::USBCmdManager::SendExitCmd();
         printf("\n Press (B) to return.");
 
-        gfxFlushBuffers();
-        gfxSwapBuffers();
+        consoleUpdate(NULL);
     }
 }

@@ -38,6 +38,7 @@ namespace tin::install
         }
 		
         serviceClose(&contentMetaDatabase.s);
+        consoleUpdate(NULL);
     }
 
     void Install::InstallApplicationRecord()
@@ -92,6 +93,7 @@ namespace tin::install
 
         printf("Pushing application record...\n");
         ASSERT_OK(nsPushApplicationRecord(baseTitleId, 0x3, storageRecords.data(), storageRecords.size() * sizeof(ContentStorageRecord)), "Failed to push application record");
+        consoleUpdate(NULL);
     }
 
     // Validate and obtain all data needed for install
@@ -133,14 +135,18 @@ namespace tin::install
         {
             printf("WARNING: Ticket installation failed! This may not be an issue, depending on your use case.\nProceed with caution!\n");
         }
+
+        consoleUpdate(NULL);
     }
 
     void Install::Begin()
     {
         printf("Installing NCAs...\n");
+        consoleUpdate(NULL);
         for (auto& record : m_contentMeta.GetContentRecords())
         {
             LOG_DEBUG("Installing from %s\n", tin::util::GetNcaIdString(record.ncaId).c_str());
+            consoleUpdate(NULL);
             this->InstallNCA(record.ncaId);
         }
 

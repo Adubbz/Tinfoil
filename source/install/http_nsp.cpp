@@ -81,6 +81,8 @@ namespace tin::install::nsp
         size_t startSizeBuffered = 0;
         double speed = 0.0;
 
+        consoleUpdate(NULL);
+
         while (!bufferedPlaceholderWriter.IsBufferDataComplete())
         {
             u64 newTime = armGetSystemTick();
@@ -101,8 +103,7 @@ namespace tin::install::nsp
             int downloadProgress = (int)(((double)bufferedPlaceholderWriter.GetSizeBuffered() / (double)bufferedPlaceholderWriter.GetTotalDataSize()) * 100.0);
 
             printf("> Download Progress: %lu/%lu MB (%i%s) (%.2f MB/s)\r", downloadSizeMB, totalSizeMB, downloadProgress, "%", speed);
-            gfxFlushBuffers();
-            gfxSwapBuffers();
+            consoleUpdate(NULL);
         }
 
         u64 totalSizeMB = bufferedPlaceholderWriter.GetTotalDataSize() / 1000000;
@@ -113,12 +114,12 @@ namespace tin::install::nsp
             int installProgress = (int)(((double)bufferedPlaceholderWriter.GetSizeWrittenToPlaceholder() / (double)bufferedPlaceholderWriter.GetTotalDataSize()) * 100.0);
 
             printf("> Install Progress: %lu/%lu MB (%i%s)\r", installSizeMB, totalSizeMB, installProgress, "%");
-            gfxFlushBuffers();
-            gfxSwapBuffers();
+            consoleUpdate(NULL);
         }
 
         thrd_join(curlThread, NULL);
         thrd_join(writeThread, NULL);
+        consoleUpdate(NULL);
     }
 
     void HTTPNSP::BufferData(void* buf, off_t offset, size_t size)

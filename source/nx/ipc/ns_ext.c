@@ -295,42 +295,6 @@ Result nsLaunchApplication(u64 titleID)
     return rc;
 }
 
-Result nsPushLaunchVersion(u64 titleID, u32 version)
-{
-    IpcCommand c;
-    ipcInitialize(&c);
-
-    struct {
-        u64 magic;
-        u64 cmd_id;
-        u64 title_id;
-        u32 version;
-        u32 padding;
-    } *raw;
-    
-    raw = ipcPrepareHeader(&c, sizeof(*raw));
-    
-    raw->magic = SFCI_MAGIC;
-    raw->cmd_id = 36;
-    raw->title_id = titleID;
-    raw->version = version;
-    
-    Result rc = serviceIpcDispatch(&g_nsAppManSrv);
-    if (R_SUCCEEDED(rc)) {
-        IpcParsedCommand r;
-        ipcParse(&r);
-
-        struct {
-            u64 magic;
-            u64 result;
-        } *resp = r.Raw;
-
-        rc = resp->result;
-    }
-    
-    return rc;
-}
-
 Result nsCheckApplicationLaunchVersion(u64 titleID)
 {
     IpcCommand c;

@@ -41,9 +41,13 @@ void userAppExit(void);
 // TODO: Validate NCAs
 // TODO: Verify dumps, ncaids match sha256s, installation succeess, perform proper uninstallation on failure and prior to install
 
+#define FB_WIDTH  1280
+#define FB_HEIGHT 720
+
+Framebuffer g_framebufObj;
 u8* g_framebuf;
 u32 g_framebufWidth;
-u32 g_framebufHeight;
+u32 g_framebufHeight = FB_HEIGHT;
 
 bool g_shouldExit = false;
 
@@ -118,11 +122,11 @@ int main(int argc, char **argv)
         Result rc = 0;
         tin::ui::ViewManager& manager = tin::ui::ViewManager::Instance();
 
-        gfxInitDefault();
         manager.m_printConsole = consoleInit(NULL);
         LOG_DEBUG("NXLink is active\n");
 
-        g_framebuf = gfxGetFramebuffer(&g_framebufWidth, &g_framebufHeight);
+        framebufferCreate(&g_framebufObj, nwindowGetDefault(), FB_WIDTH, FB_HEIGHT, PIXEL_FORMAT_RGBA_8888, 2);
+        framebufferMakeLinear(&g_framebufObj);
 
         // Create the tinfoil directory and subdirs on the sd card if they don't already exist. 
         // These are used throughout the app without existance checks.
@@ -134,7 +138,6 @@ int main(int argc, char **argv)
         
         tin::ui::Category titleManCat("Title Management");
         titleManCat.AddMode(std::move(std::make_unique<tin::ui::InstallNSPMode>()));
-        titleManCat.AddMode(std::move(std::make_unique<tin::ui::VerifyNSPMode>()));
         titleManCat.AddMode(std::move(std::make_unique<tin::ui::InstallExtractedNSPMode>()));
         titleManCat.AddMode(std::move(std::make_unique<tin::ui::USBInstallMode>()));
         titleManCat.AddMode(std::move(std::make_unique<tin::ui::NetworkInstallMode>()));
@@ -147,18 +150,12 @@ int main(int argc, char **argv)
         // TODO: Add install tik and cert, delete personalized ticket and view title keys
 
         auto mainView = std::make_unique<tin::ui::ConsoleOptionsView>();
-        auto showUITesting = [&]()
-        {
-            auto installView = std::make_unique<tin::ui::InstallView>();
-            manager.PushView(std::move(installView));
-        };
 
         mainView->AddEntry("Main Menu", tin::ui::ConsoleEntrySelectType::HEADING, nullptr);
         mainView->AddEntry("", tin::ui::ConsoleEntrySelectType::NONE, nullptr);
         mainView->AddEntry(titleManCat.m_name, tin::ui::ConsoleEntrySelectType::SELECT, std::bind(&tin::ui::Category::OnSelected, &titleManCat));
         mainView->AddEntry("Install Information", tin::ui::ConsoleEntrySelectType::SELECT_INACTIVE, nullptr);
         mainView->AddEntry("Ticket Management", tin::ui::ConsoleEntrySelectType::SELECT, std::bind(&tin::ui::Category::OnSelected, &tikManCat));
-        mainView->AddEntry("UI Testing", tin::ui::ConsoleEntrySelectType::SELECT, showUITesting);
         mainView->AddEntry("Exit", tin::ui::ConsoleEntrySelectType::SELECT, markForExit);
         
         manager.PushView(std::move(mainView));
@@ -171,12 +168,13 @@ int main(int argc, char **argv)
             if (kDown)
                 manager.ProcessInput(kDown);
 
-            g_framebuf = gfxGetFramebuffer(&g_framebufWidth, &g_framebufHeight);
+            g_framebuf = (u8*)framebufferBegin(&g_framebufObj, &g_framebufWidth);
+            memset(g_framebuf, 0, g_framebufWidth * FB_HEIGHT);
 
             manager.Update();
+            consoleUpdate(NULL);
 
-            gfxFlushBuffers();
-            gfxSwapBuffers();
+            framebufferEnd(&g_framebufObj);
         }
     }
     catch (std::exception& e)
@@ -208,6 +206,8 @@ int main(int argc, char **argv)
         }
     }
 
-    gfxExit();
+    framebufferClose(&g_framebufObj);
+    consoleExit(NULL);
+
     return 0;
 }

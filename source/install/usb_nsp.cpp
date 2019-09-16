@@ -1,13 +1,6 @@
 #include "install/usb_nsp.hpp"
 
-extern "C"
-{
-#include <switch/services/hid.h>
-#include <switch/display/gfx.h>
-#include <switch/arm/counter.h>
-#include <switch/kernel/svc.h>
-}
-
+#include <switch.h>
 #include <algorithm>
 #include <malloc.h>
 #include <threads.h>
@@ -129,8 +122,7 @@ namespace tin::install::nsp
             int downloadProgress = (int)(((double)bufferedPlaceholderWriter.GetSizeBuffered() / (double)bufferedPlaceholderWriter.GetTotalDataSize()) * 100.0);
 
             printf("> Download Progress: %lu/%lu MB (%i%s) (%.2f MB/s)\r", downloadSizeMB, totalSizeMB, downloadProgress, "%", speed);
-            gfxFlushBuffers();
-            gfxSwapBuffers();
+            consoleUpdate(NULL);
         }
 
         u64 totalSizeMB = bufferedPlaceholderWriter.GetTotalDataSize() / 1000000;
@@ -141,8 +133,7 @@ namespace tin::install::nsp
             int installProgress = (int)(((double)bufferedPlaceholderWriter.GetSizeWrittenToPlaceholder() / (double)bufferedPlaceholderWriter.GetTotalDataSize()) * 100.0);
 
             printf("> Install Progress: %lu/%lu MB (%i%s)\r", installSizeMB, totalSizeMB, installProgress, "%");
-            gfxFlushBuffers();
-            gfxSwapBuffers();
+            consoleUpdate(NULL);
         }
 
         thrd_join(usbThread, NULL);

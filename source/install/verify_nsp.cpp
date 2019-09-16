@@ -12,6 +12,7 @@
 #include "util/file_util.hpp"
 #include "util/title_util.hpp"
 
+#ifdef __VERIFY_NSP__
 namespace tin::install
 {
     NSPVerifier::NSPVerifier(std::string nspPath) :
@@ -179,3 +180,4 @@ namespace tin::install
         printf("[%sOK%s] %s\n", CONSOLE_GREEN, CONSOLE_RESET, text.c_str());
     }
 }
+#endif
