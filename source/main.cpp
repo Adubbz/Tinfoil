@@ -19,7 +19,6 @@
 #include "mode/verify_nsp_mode.hpp"
 #include "ui/framework/view.hpp"
 #include "ui/framework/console_options_view.hpp"
-#include "ui/install_view.hpp"
 
 #include "debug.h"
 #include "error.hpp"

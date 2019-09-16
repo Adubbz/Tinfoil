@@ -21,18 +21,4 @@ namespace tin::ui
         if (keys & KEY_B)
             m_viewManager->Unwind(m_unwindDistance);
     }
-
-    void LayoutView::Update()
-    {        
-        for (auto& layer : m_layers)
-        {
-            layer->UpdateLayer();
-            layer->DrawLayer();
-        }
-    }
-
-    void LayoutView::AddLayer(std::unique_ptr<Layer> layer)
-    {
-        m_layers.push_back(std::move(layer));
-    }
 }

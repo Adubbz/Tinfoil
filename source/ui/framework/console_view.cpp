@@ -4,12 +4,12 @@
 
 namespace tin::ui
 {
-    ConsoleView::ConsoleView(unsigned int unwindDistance) :
+     ConsoleView::ConsoleView(unsigned int unwindDistance) :
         m_unwindDistance(unwindDistance)
     {
 
     }
-
+    
     void ConsoleView::OnPresented()
     {
         consoleClear();
