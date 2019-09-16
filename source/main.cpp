@@ -40,14 +40,6 @@ void userAppExit(void);
 // TODO: Validate NCAs
 // TODO: Verify dumps, ncaids match sha256s, installation succeess, perform proper uninstallation on failure and prior to install
 
-#define FB_WIDTH  1280
-#define FB_HEIGHT 720
-
-Framebuffer g_framebufObj;
-u8* g_framebuf;
-u32 g_framebufWidth;
-u32 g_framebufHeight = FB_HEIGHT;
-
 bool g_shouldExit = false;
 
 void userAppInit(void)
@@ -122,9 +114,6 @@ int main(int argc, char **argv)
         manager.m_printConsole = consoleInit(NULL);
         LOG_DEBUG("NXLink is active\n");
 
-        framebufferCreate(&g_framebufObj, nwindowGetDefault(), FB_WIDTH, FB_HEIGHT, PIXEL_FORMAT_RGBA_8888, 2);
-        framebufferMakeLinear(&g_framebufObj);
-
         // Create the tinfoil directory and subdirs on the sd card if they don't already exist. 
         // These are used throughout the app without existance checks.
         if (R_FAILED(rc = createTinfoilDirs()))
@@ -165,14 +154,8 @@ int main(int argc, char **argv)
             if (kDown)
                 manager.ProcessInput(kDown);
 
-            g_framebuf = (u8*)framebufferBegin(&g_framebufObj, &g_framebufWidth);
-            memset(g_framebuf, 0, g_framebufWidth * FB_HEIGHT);
-
             manager.Update();
             consoleUpdate(NULL);
-
-            framebufferEnd(&g_framebufObj);
-
         }
     }
     catch (std::exception& e)
@@ -204,7 +187,6 @@ int main(int argc, char **argv)
         }
     }
 
-    framebufferClose(&g_framebufObj);
     consoleExit(NULL);
 
     return 0;
