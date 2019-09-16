@@ -1,5 +1,6 @@
 #pragma once
 
+#ifdef __VERIFY_NSP__
 #include <string>
 
 namespace tin::install
@@ -29,3 +30,4 @@ namespace tin::install
             void PrintSuccess(std::string text);
     };
 }
+#endif

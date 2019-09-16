@@ -1,6 +1,6 @@
 #pragma once
 
-#include <switch/services/fs.h>
+#include <switch.h>
 #include "install/install.hpp"
 #include "install/simple_filesystem.hpp"
 #include "nx/content_meta.hpp"

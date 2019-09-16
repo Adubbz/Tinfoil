@@ -52,12 +52,12 @@ namespace tin::ui
         ConsoleOptionsView* prevView;
         RightsIdOptionValue* optionValue;
 
-        if (!(prevView = dynamic_cast<ConsoleOptionsView*>(manager.GetCurrentView())))
+        if (!(prevView = reinterpret_cast<ConsoleOptionsView*>(manager.GetCurrentView())))
         {
             throw std::runtime_error("View must be a ConsoleOptionsView!");
         }
 
-        if (!(optionValue = dynamic_cast<RightsIdOptionValue*>(prevView->GetSelectedOptionValue())))
+        if (!(optionValue = reinterpret_cast<RightsIdOptionValue*>(prevView->GetSelectedOptionValue())))
         {
             throw std::runtime_error("Option value must be a RightsIdOptionValue");
         }

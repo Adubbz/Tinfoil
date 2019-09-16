@@ -13,6 +13,14 @@
 #include <string>
 #include <vector>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#ifdef __cplusplus
+}
+#endif
+
 namespace tin::network
 {
     class HTTPHeader

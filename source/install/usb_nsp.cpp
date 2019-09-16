@@ -1,13 +1,7 @@
 #include "install/usb_nsp.hpp"
 
-extern "C"
-{
-#include <switch/runtime/devices/console.h>
-#include <switch/services/hid.h>
-#include <switch/arm/counter.h>
-#include <switch/kernel/svc.h>
-}
 
+#include <switch.h>
 #include <algorithm>
 #include <malloc.h>
 #include <threads.h>

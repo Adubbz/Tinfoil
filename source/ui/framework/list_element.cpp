@@ -84,7 +84,7 @@ namespace tin::ui
         m_touchHandler.m_onTapped = [&](unsigned int posX, unsigned int posY)
         {
             unsigned int row = (posY - m_touchHandler.GetTouchAreaPos().y + m_scrollOffset) / RowElement::ROW_HEIGHT;
-            RowElement* rowElement = dynamic_cast<RowElement*>(m_subElements.at(row).get());
+            RowElement* rowElement = reinterpret_cast<RowElement*>(m_subElements.at(row).get());
             rowElement->SetSelected(!rowElement->m_isSelected);
         };
     }

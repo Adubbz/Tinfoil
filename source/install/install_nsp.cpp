@@ -23,10 +23,13 @@ namespace tin::install::nsp
 
     std::tuple<nx::ncm::ContentMeta, nx::ncm::ContentRecord> NSPInstallTask::ReadCNMT()
     {
-        std::tuple<std::string, nx::ncm::ContentRecord> cnmtNCAInfo = tin::util::GetCNMTNCAInfo(this->m_simpleFileSystem->m_absoluteRootPath.substr(0, this->m_simpleFileSystem->m_absoluteRootPath.size() - 1));
-        return { tin::util::GetContentMetaFromNCA(std::get<0>(cnmtNCAInfo)), std::get<1>(cnmtNCAInfo) };
+        nx::ncm::ContentRecord cnmtRecord = tin::util::CreateNSPCNMTContentRecord(this->m_simpleFileSystem->m_absoluteRootPath.substr(0, this->m_simpleFileSystem->m_absoluteRootPath.size() - 1));
+        nx::ncm::ContentStorage contentStorage(m_destStorageId);
+        this->InstallNCA(cnmtRecord.ncaId);
+        std::string cnmtNCAFullPath = contentStorage.GetPath(cnmtRecord.ncaId);
+        return { tin::util::GetContentMetaFromNCA(cnmtNCAFullPath), cnmtRecord };
     }
-
+    
     void NSPInstallTask::InstallTicketCert()
     {
         // Read the tik file and put it into a buffer
@@ -49,6 +52,7 @@ namespace tin::install::nsp
 
         // Finally, let's actually import the ticket
         ASSERT_OK(esImportTicket(tikBuf.get(), tikSize, certBuf.get(), certSize), "Failed to import ticket");
+        consoleUpdate(NULL);
     }
 
     void NSPInstallTask::InstallNCA(const NcmNcaId &ncaId)
@@ -89,6 +93,8 @@ namespace tin::install::nsp
         contentStorage.CreatePlaceholder(ncaId, ncaId, ncaSize);
                 
         float progress;
+
+        consoleUpdate(NULL);
                 
         while (fileOff < ncaSize) 
         {   
@@ -103,6 +109,7 @@ namespace tin::install::nsp
             ncaFile.Read(fileOff, readBuffer.get(), readSize);
             contentStorage.WritePlaceholder(ncaId, fileOff, readBuffer.get(), readSize);
             fileOff += readSize;
+            consoleUpdate(NULL);
         }
 
         // Clean up the line for whatever comes next
@@ -123,5 +130,7 @@ namespace tin::install::nsp
             contentStorage.DeletePlaceholder(ncaId);
         }
         catch (...) {}
+
+        consoleUpdate(NULL);
     }
 }
