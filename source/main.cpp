@@ -140,18 +140,12 @@ int main(int argc, char **argv)
         // TODO: Add install tik and cert, delete personalized ticket and view title keys
 
         auto mainView = std::make_unique<tin::ui::ConsoleOptionsView>();
-        auto showUITesting = [&]()
-        {
-            auto installView = std::make_unique<tin::ui::InstallView>();
-            manager.PushView(std::move(installView));
-        };
 
         mainView->AddEntry("Main Menu", tin::ui::ConsoleEntrySelectType::HEADING, nullptr);
         mainView->AddEntry("", tin::ui::ConsoleEntrySelectType::NONE, nullptr);
         mainView->AddEntry(titleManCat.m_name, tin::ui::ConsoleEntrySelectType::SELECT, std::bind(&tin::ui::Category::OnSelected, &titleManCat));
         mainView->AddEntry("Install Information", tin::ui::ConsoleEntrySelectType::SELECT_INACTIVE, nullptr);
         mainView->AddEntry("Ticket Management", tin::ui::ConsoleEntrySelectType::SELECT, std::bind(&tin::ui::Category::OnSelected, &tikManCat));
-        mainView->AddEntry("UI Testing", tin::ui::ConsoleEntrySelectType::SELECT, showUITesting);
         mainView->AddEntry("Exit", tin::ui::ConsoleEntrySelectType::SELECT, markForExit);
         
         manager.PushView(std::move(mainView));
