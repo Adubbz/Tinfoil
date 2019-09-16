@@ -71,9 +71,6 @@ void userAppInit(void)
     if (R_FAILED(plInitialize()))
         fatalSimple(0xBEE8);
 
-    if (R_FAILED(romfsInit()))
-        fatalSimple(0xBEE9);
-
     if (R_FAILED(usbCommsInitialize()))
         fatalSimple(0xBEEA);
 
@@ -94,7 +91,6 @@ void userAppExit(void)
     #endif
 
     usbCommsExit();
-    romfsExit();
     plExit();
     setExit();
     ncmextExit();
