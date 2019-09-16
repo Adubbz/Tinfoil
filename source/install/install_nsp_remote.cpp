@@ -39,6 +39,7 @@ namespace tin::install::nsp
         cnmtContentRecord.ncaId = cnmtNcaId;
         *(u64*)&cnmtContentRecord.size = cnmtNcaSize & 0xFFFFFFFFFFFF;
         cnmtContentRecord.contentType = nx::ncm::ContentType::META;
+        consoleUpdate(NULL);
 
         return { tin::util::GetContentMetaFromNCA(cnmtNCAFullPath), cnmtContentRecord };
     }
@@ -82,6 +83,8 @@ namespace tin::install::nsp
             contentStorage.DeletePlaceholder(ncaId);
         }
         catch (...) {}
+
+        consoleUpdate(NULL);
     }
 
     void RemoteNSPInstall::InstallTicketCert()
@@ -116,5 +119,6 @@ namespace tin::install::nsp
 
         // Finally, let's actually import the ticket
         ASSERT_OK(esImportTicket(tikBuf.get(), tikSize, certBuf.get(), certSize), "Failed to import ticket");
+        consoleUpdate(NULL);
     }
 }

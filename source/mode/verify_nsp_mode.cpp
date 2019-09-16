@@ -1,3 +1,4 @@
+#ifdef __VERIFY_NSP__
 #include "mode/verify_nsp_mode.hpp"
 
 #include <switch.h>
@@ -54,3 +55,4 @@ namespace tin::ui
         nspVerifier.PerformVerification();
     }
 }
+#endif

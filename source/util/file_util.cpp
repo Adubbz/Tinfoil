@@ -9,7 +9,7 @@
 
 namespace tin::util
 {
-    std::tuple<std::string, nx::ncm::ContentRecord> GetCNMTNCAInfo(std::string nspPath)
+    nx::ncm::ContentRecord CreateNSPCNMTContentRecord(std::string nspPath)
     {
         // Open filesystem
         nx::fs::IFileSystem fileSystem;
@@ -34,7 +34,6 @@ namespace tin::util
         // Create the path of the cnmt NCA
         auto cnmtNCAName = simpleFS.GetFileNameFromExtension("", "cnmt.nca");
         auto cnmtNCAFile = simpleFS.OpenFile(cnmtNCAName);
-        auto cnmtNCAFullPath = simpleFS.m_absoluteRootPath + cnmtNCAName;
         u64 cnmtNCASize = cnmtNCAFile.GetSize();
 
         // Prepare cnmt content record
@@ -43,9 +42,10 @@ namespace tin::util
         *(u64*)contentRecord.size = cnmtNCASize & 0xFFFFFFFFFFFF;
         contentRecord.contentType = nx::ncm::ContentType::META;
 
-        return { cnmtNCAFullPath, contentRecord };
+        return contentRecord;
     }
 
+    // NOTE: As of 7.0.0, this will only work with installed cnmt nca paths
     nx::ncm::ContentMeta GetContentMetaFromNCA(std::string ncaPath)
     {
         // Create the cnmt filesystem

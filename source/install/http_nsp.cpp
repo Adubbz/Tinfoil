@@ -81,6 +81,8 @@ namespace tin::install::nsp
         size_t startSizeBuffered = 0;
         double speed = 0.0;
 
+        consoleUpdate(NULL);
+
         while (!bufferedPlaceholderWriter.IsBufferDataComplete())
         {
             u64 newTime = armGetSystemTick();
@@ -117,6 +119,7 @@ namespace tin::install::nsp
 
         thrd_join(curlThread, NULL);
         thrd_join(writeThread, NULL);
+        consoleUpdate(NULL);
     }
 
     void HTTPNSP::BufferData(void* buf, off_t offset, size_t size)

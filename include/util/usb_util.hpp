@@ -1,8 +1,7 @@
 #pragma once
 
-#include <switch/types.h>
+#include <switch.h>
 #include <string>
-#include "nx/ipc/usb_comms_new.h"
 
 namespace tin::util
 {

@@ -8,7 +8,7 @@
 
 namespace tin::util
 {
-    std::tuple<std::string, nx::ncm::ContentRecord> GetCNMTNCAInfo(std::string nspPath);
+    nx::ncm::ContentRecord CreateNSPCNMTContentRecord(std::string nspPath);
     nx::ncm::ContentMeta GetContentMetaFromNCA(std::string ncaPath);
     std::vector<std::string> GetNSPList();
 }
