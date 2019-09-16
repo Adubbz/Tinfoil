@@ -44,7 +44,6 @@ bool g_shouldExit = false;
 
 void userAppInit(void)
 {
-    //consoleInit(NULL);
     if (R_FAILED(ncmextInitialize()))
         fatalSimple(0xBEEF);
 
