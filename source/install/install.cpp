@@ -15,9 +15,14 @@ namespace tin::install
 {
     Install::Install(FsStorageId destStorageId, bool ignoreReqFirmVersion) :
         m_destStorageId(destStorageId), m_ignoreReqFirmVersion(ignoreReqFirmVersion), m_contentMeta()
-    {}
+    {
+        appletSetMediaPlaybackState(true);
+    }
 
-    Install::~Install() {}
+    Install::~Install()
+    {
+        appletSetMediaPlaybackState(false);
+    }
 
     // TODO: Implement RAII on NcmContentMetaDatabase
     void Install::InstallContentMetaRecords(tin::data::ByteBuffer& installContentMetaBuf)

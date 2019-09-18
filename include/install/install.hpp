@@ -26,7 +26,7 @@ namespace tin::install
             nx::ncm::ContentMeta m_contentMeta;
 
             Install(FsStorageId destStorageId, bool ignoreReqFirmVersion);
-            ~Install();
+            virtual ~Install();
 
             virtual std::tuple<nx::ncm::ContentMeta, nx::ncm::ContentRecord> ReadCNMT() = 0;
 
