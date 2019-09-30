@@ -28,12 +28,12 @@ namespace tin::install
     void Install::InstallContentMetaRecords(tin::data::ByteBuffer& installContentMetaBuf)
     {
         NcmContentMetaDatabase contentMetaDatabase;
-        NcmMetaRecord contentMetaKey = m_contentMeta.GetContentMetaKey();
+        NcmContentMetaKey contentMetaKey = m_contentMeta.GetContentMetaKey();
 
         try
         {
-            ASSERT_OK(ncmOpenContentMetaDatabase(m_destStorageId, &contentMetaDatabase), "Failed to open content meta database");
-            ASSERT_OK(ncmContentMetaDatabaseSet(&contentMetaDatabase, &contentMetaKey, installContentMetaBuf.GetSize(), (NcmContentMetaRecordsHeader*)installContentMetaBuf.GetData()), "Failed to set content records");
+            ASSERT_OK(ncmOpenContentMetaDatabase(&contentMetaDatabase, m_destStorageId), "Failed to open content meta database");
+            ASSERT_OK(ncmContentMetaDatabaseSet(&contentMetaDatabase, &contentMetaKey, (NcmContentMetaHeader*)installContentMetaBuf.GetData(), installContentMetaBuf.GetSize()), "Failed to set content records");
             ASSERT_OK(ncmContentMetaDatabaseCommit(&contentMetaDatabase), "Failed to commit content records");
         }
         catch (std::runtime_error& e)
@@ -107,14 +107,14 @@ namespace tin::install
         tin::data::ByteBuffer cnmtBuf;
         auto cnmtTuple = this->ReadCNMT();
         m_contentMeta = std::get<0>(cnmtTuple);
-        nx::ncm::ContentRecord cnmtContentRecord = std::get<1>(cnmtTuple);
+        NcmContentInfo cnmtContentRecord = std::get<1>(cnmtTuple);
 
         nx::ncm::ContentStorage contentStorage(m_destStorageId);
 
-        if (!contentStorage.Has(cnmtContentRecord.ncaId))
+        if (!contentStorage.Has(cnmtContentRecord.content_id))
         {
             printf("Installing CNMT NCA...\n");
-            this->InstallNCA(cnmtContentRecord.ncaId);
+            this->InstallNCA(cnmtContentRecord.content_id);
         }
         else
         {
@@ -148,11 +148,11 @@ namespace tin::install
     {
         printf("Installing NCAs...\n");
         consoleUpdate(NULL);
-        for (auto& record : m_contentMeta.GetContentRecords())
+        for (auto& record : m_contentMeta.GetContentInfos())
         {
-            LOG_DEBUG("Installing from %s\n", tin::util::GetNcaIdString(record.ncaId).c_str());
+            LOG_DEBUG("Installing from %s\n", tin::util::GetNcaIdString(record.content_id).c_str());
             consoleUpdate(NULL);
-            this->InstallNCA(record.ncaId);
+            this->InstallNCA(record.content_id);
         }
 
         LOG_DEBUG("Post Install Records: \n");
@@ -161,12 +161,12 @@ namespace tin::install
 
     u64 Install::GetTitleId()
     {
-        return m_contentMeta.GetContentMetaKey().titleId;
+        return m_contentMeta.GetContentMetaKey().title_id;
     }
 
-    nx::ncm::ContentMetaType Install::GetContentMetaType()
+    NcmContentMetaType Install::GetContentMetaType()
     {
-        return static_cast<nx::ncm::ContentMetaType>(m_contentMeta.GetContentMetaKey().type);
+        return static_cast<NcmContentMetaType>(m_contentMeta.GetContentMetaKey().type);
     }
 
     void Install::DebugPrintInstallData()
@@ -174,15 +174,15 @@ namespace tin::install
         #ifdef NXLINK_DEBUG
 
         NcmContentMetaDatabase contentMetaDatabase;
-        NcmMetaRecord metaRecord = m_contentMeta.GetContentMetaKey();
-        u64 baseTitleId = tin::util::GetBaseTitleId(metaRecord.titleId, static_cast<nx::ncm::ContentMetaType>(metaRecord.type));
+        NcmContentMetaKey metaRecord = m_contentMeta.GetContentMetaKey();
+        u64 baseTitleId = tin::util::GetBaseTitleId(metaRecord.titleId, static_cast<NcmContentMetaType>(metaRecord.type));
         u64 updateTitleId = baseTitleId ^ 0x800;
         bool hasUpdate = true;
 
         try
         {
-            NcmMetaRecord latestApplicationContentMetaKey;
-            NcmMetaRecord latestPatchContentMetaKey;
+            NcmContentMetaKey latestApplicationContentMetaKey;
+            NcmContentMetaKey latestPatchContentMetaKey;
 
             ASSERT_OK(ncmOpenContentMetaDatabase(m_destStorageId, &contentMetaDatabase), "Failed to open content meta database");
             ASSERT_OK(ncmContentMetaDatabaseGetLatestContentMetaKey(&contentMetaDatabase, baseTitleId, &latestApplicationContentMetaKey), "Failed to get latest application content meta key");
@@ -201,7 +201,7 @@ namespace tin::install
             ASSERT_OK(ncmContentMetaDatabaseGetSize(&contentMetaDatabase, &latestApplicationContentMetaKey, &appContentRecordSize), "Failed to get application content record size");
             
             auto appContentRecordBuf = std::make_unique<u8[]>(appContentRecordSize);
-            ASSERT_OK(ncmContentMetaDatabaseGet(&contentMetaDatabase, &latestApplicationContentMetaKey, appContentRecordSize, (NcmContentMetaRecordsHeader*)appContentRecordBuf.get(), &appContentRecordSizeRead), "Failed to get app content record size");
+            ASSERT_OK(ncmContentMetaDatabaseGet(&contentMetaDatabase, &latestApplicationContentMetaKey, appContentRecordSize, (NcmContentMetaHeader*)appContentRecordBuf.get(), &appContentRecordSizeRead), "Failed to get app content record size");
 
             if (appContentRecordSize != appContentRecordSizeRead)
             {
@@ -209,7 +209,7 @@ namespace tin::install
             }
 
             LOG_DEBUG("Application content meta key: \n");
-            printBytes(nxlinkout, (u8*)&latestApplicationContentMetaKey, sizeof(NcmMetaRecord), true);
+            printBytes(nxlinkout, (u8*)&latestApplicationContentMetaKey, sizeof(NcmContentMetaKey), true);
             LOG_DEBUG("Application content meta: \n");
             printBytes(nxlinkout, appContentRecordBuf.get(), appContentRecordSize, true);
 
@@ -220,7 +220,7 @@ namespace tin::install
                 ASSERT_OK(ncmContentMetaDatabaseGetSize(&contentMetaDatabase, &latestPatchContentMetaKey, &patchContentRecordsSize), "Failed to get patch content record size");
             
                 auto patchContentRecordBuf = std::make_unique<u8[]>(patchContentRecordsSize);
-                ASSERT_OK(ncmContentMetaDatabaseGet(&contentMetaDatabase, &latestPatchContentMetaKey, patchContentRecordsSize, (NcmContentMetaRecordsHeader*)patchContentRecordBuf.get(), &patchContentRecordSizeRead), "Failed to get patch content record size");
+                ASSERT_OK(ncmContentMetaDatabaseGet(&contentMetaDatabase, &latestPatchContentMetaKey, patchContentRecordsSize, (NcmContentMetaHeader*)patchContentRecordBuf.get(), &patchContentRecordSizeRead), "Failed to get patch content record size");
             
                 if (patchContentRecordsSize != patchContentRecordSizeRead)
                 {
@@ -228,7 +228,7 @@ namespace tin::install
                 }
 
                 LOG_DEBUG("Patch content meta key: \n");
-                printBytes(nxlinkout, (u8*)&latestPatchContentMetaKey, sizeof(NcmMetaRecord), true);
+                printBytes(nxlinkout, (u8*)&latestPatchContentMetaKey, sizeof(NcmContentMetaKey), true);
                 LOG_DEBUG("Patch content meta: \n");
                 printBytes(nxlinkout, patchContentRecordBuf.get(), patchContentRecordsSize, true);
             }

@@ -25,7 +25,7 @@ namespace tin::ui
         view->AddEntry("", tin::ui::ConsoleEntrySelectType::NONE, nullptr);
 
         NsApplicationRecord records[32];
-        u64 offset = 0, entriesRead;
+        s32 offset = 0, entriesRead;
 
         while (!nsListApplicationRecord(records, sizeof(records), offset, &entriesRead))
         {
@@ -34,7 +34,7 @@ namespace tin::ui
                 break;
             }
 
-            for (u32 i = 0; i < entriesRead; i++)
+            for (s32 i = 0; i < entriesRead; i++)
             {
                 view->AddEntry(std::make_unique<TitleIdOptionValue>(records[i].titleID), tin::ui::ConsoleEntrySelectType::SELECT, std::bind(&ResetRequiredVersionMode::OnTitleIdSelected, this));
             }

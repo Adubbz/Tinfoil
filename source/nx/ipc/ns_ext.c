@@ -402,7 +402,7 @@ Result nsCountApplicationContentMeta(u64 titleId, u32* countOut)
     return rc;
 }
 
-Result nsGetContentMetaStorage(const NcmMetaRecord *record, u8 *out)
+Result nsGetContentMetaStorage(const NcmContentMetaKey *record, u8 *out)
 {
     IpcCommand c;
     ipcInitialize(&c);
@@ -410,14 +410,14 @@ Result nsGetContentMetaStorage(const NcmMetaRecord *record, u8 *out)
     struct {
         u64 magic;
         u64 cmd_id;
-        NcmMetaRecord metaRecord;
+        NcmContentMetaKey metaRecord;
     } *raw;
     
     raw = ipcPrepareHeader(&c, sizeof(*raw));
     
     raw->magic = SFCI_MAGIC;
     raw->cmd_id = 606;
-    memcpy(&raw->metaRecord, record, sizeof(NcmMetaRecord));
+    memcpy(&raw->metaRecord, record, sizeof(NcmContentMetaKey));
     
     Result rc = serviceIpcDispatch(&g_nsAppManSrv);
     if (R_SUCCEEDED(rc)) {

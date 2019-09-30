@@ -24,7 +24,7 @@ namespace tin::ui
 
         nx::fs::IFileSystem fileSystem;
         fileSystem.OpenSdFileSystem();
-        nx::fs::IDirectory dir = fileSystem.OpenDirectory("/tinfoil/extracted/", FS_DIROPEN_DIRECTORY);
+        nx::fs::IDirectory dir = fileSystem.OpenDirectory("/tinfoil/extracted/", FsDirOpenMode_ReadDirs);
         u64 entryCount = dir.GetEntryCount();
 
         if (entryCount > 0)
@@ -36,7 +36,7 @@ namespace tin::ui
             {
                 FsDirectoryEntry dirEntry = dirEntries[i];
 
-                if (dirEntry.type != ENTRYTYPE_DIR)
+                if (dirEntry.type != FsDirEntryType_Dir)
                     continue;
 
                 view->AddEntry(dirEntry.name, ConsoleEntrySelectType::SELECT, std::bind(&InstallExtractedNSPMode::OnExtractedNSPSelected, this));

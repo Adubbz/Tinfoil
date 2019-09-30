@@ -38,14 +38,14 @@ namespace tin::util
         return ncaId;
     }
 
-    u64 GetBaseTitleId(u64 titleId, nx::ncm::ContentMetaType contentMetaType)
+    u64 GetBaseTitleId(u64 titleId, NcmContentMetaType contentMetaType)
     {
         switch (contentMetaType)
         {
-            case nx::ncm::ContentMetaType::PATCH:
+            case NcmContentMetaType_Patch:
                 return titleId ^ 0x800;
 
-            case nx::ncm::ContentMetaType::ADD_ON_CONTENT:
+            case NcmContentMetaType_AddOnContent:
                 return (titleId ^ 0x1000) & ~0xFFF;
 
             default:
@@ -59,7 +59,7 @@ namespace tin::util
         NsApplicationControlData appControlData;
         size_t sizeRead;
 
-        if (R_FAILED(rc = nsGetApplicationControlData(0x1, baseTitleId, &appControlData, sizeof(NsApplicationControlData), &sizeRead)))
+        if (R_FAILED(rc = nsGetApplicationControlData(NsApplicationControlSource_Storage, baseTitleId, &appControlData, sizeof(NsApplicationControlData), &sizeRead)))
         {
             LOG_DEBUG("Failed to get application control data. Error code: 0x%08x\n", rc);
             return "Unknown";
@@ -88,18 +88,18 @@ namespace tin::util
         return languageEntry->name;
     }
 
-    std::string GetTitleName(u64 titleId, nx::ncm::ContentMetaType contentMetaType)
+    std::string GetTitleName(u64 titleId, NcmContentMetaType contentMetaType)
     {
         u64 baseTitleId = GetBaseTitleId(titleId, contentMetaType);
         std::string titleName = GetBaseTitleName(baseTitleId);
 
         switch (contentMetaType)
         {
-            case nx::ncm::ContentMetaType::PATCH:
+            case NcmContentMetaType_Patch:
                 titleName += " (Update)";
                 break;
 
-            case nx::ncm::ContentMetaType::ADD_ON_CONTENT:
+            case NcmContentMetaType_AddOnContent:
                 titleName += " (DLC)";
                 break;
 

@@ -20,7 +20,7 @@ namespace nx::fs
     void IFile::Read(u64 offset, void* buf, size_t size)
     {
         u64 sizeRead;
-        ASSERT_OK(fsFileRead(&m_file, offset, buf, size, FS_READOPTION_NONE, &sizeRead), "Failed to read file");
+        ASSERT_OK(fsFileRead(&m_file, offset, buf, size, FsReadOption_None, &sizeRead), "Failed to read file");
         
         if (sizeRead != size)
         {
@@ -115,7 +115,7 @@ namespace nx::fs
         path.reserve(FS_MAX_PATH);
 
         FsFile file;
-        ASSERT_OK(fsFsOpenFile(&m_fileSystem, path.c_str(), FS_OPEN_READ, &file), ("Failed to open file " + path).c_str());
+        ASSERT_OK(fsFsOpenFile(&m_fileSystem, path.c_str(), FsOpenMode_Read, &file), ("Failed to open file " + path).c_str());
         return IFile(file);
     }
 

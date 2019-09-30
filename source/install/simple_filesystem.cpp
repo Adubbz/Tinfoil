@@ -32,7 +32,7 @@ namespace tin::install::nsp
 
     std::string SimpleFileSystem::GetFileNameFromExtension(std::string path, std::string extension)
     {
-        nx::fs::IDirectory dir = m_fileSystem->OpenDirectory(m_rootPath + path, FS_DIROPEN_FILE | FS_DIROPEN_DIRECTORY);
+        nx::fs::IDirectory dir = m_fileSystem->OpenDirectory(m_rootPath + path, FsDirOpenMode_ReadFiles | FsDirOpenMode_ReadDirs);
 
         u64 entryCount = dir.GetEntryCount();
         auto dirEntries = std::make_unique<FsDirectoryEntry[]>(entryCount);
@@ -44,7 +44,7 @@ namespace tin::install::nsp
             FsDirectoryEntry dirEntry = dirEntries[i];
             std::string dirEntryName = dirEntry.name;
 
-            if (dirEntry.type == ENTRYTYPE_DIR)
+            if (dirEntry.type == FsDirEntryType_Dir)
             {
                 auto subdirPath = path + dirEntryName + "/";
                 auto subdirFound = this->GetFileNameFromExtension(subdirPath, extension);
@@ -53,7 +53,7 @@ namespace tin::install::nsp
                     return subdirFound;
                 continue;
             }
-            else if (dirEntry.type == ENTRYTYPE_FILE)
+            else if (dirEntry.type == FsDirEntryType_File)
             {
                 auto foundExtension = dirEntryName.substr(dirEntryName.find(".") + 1); 
 

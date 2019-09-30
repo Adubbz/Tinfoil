@@ -21,12 +21,12 @@ namespace tin::install::nsp
 
     }
 
-    std::tuple<nx::ncm::ContentMeta, nx::ncm::ContentRecord> NSPInstallTask::ReadCNMT()
+    std::tuple<nx::ncm::ContentMeta, NcmContentInfo> NSPInstallTask::ReadCNMT()
     {
-        nx::ncm::ContentRecord cnmtRecord = tin::util::CreateNSPCNMTContentRecord(this->m_simpleFileSystem->m_absoluteRootPath.substr(0, this->m_simpleFileSystem->m_absoluteRootPath.size() - 1));
+        NcmContentInfo cnmtRecord = tin::util::CreateNSPCNMTContentRecord(this->m_simpleFileSystem->m_absoluteRootPath.substr(0, this->m_simpleFileSystem->m_absoluteRootPath.size() - 1));
         nx::ncm::ContentStorage contentStorage(m_destStorageId);
-        this->InstallNCA(cnmtRecord.ncaId);
-        std::string cnmtNCAFullPath = contentStorage.GetPath(cnmtRecord.ncaId);
+        this->InstallNCA(cnmtRecord.content_id);
+        std::string cnmtNCAFullPath = contentStorage.GetPath(cnmtRecord.content_id);
         return { tin::util::GetContentMetaFromNCA(cnmtNCAFullPath), cnmtRecord };
     }
     

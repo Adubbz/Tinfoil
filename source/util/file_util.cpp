@@ -9,7 +9,7 @@
 
 namespace tin::util
 {
-    nx::ncm::ContentRecord CreateNSPCNMTContentRecord(const std::string& nspPath)
+    NcmContentInfo CreateNSPCNMTContentRecord(const std::string& nspPath)
     {
         // Open filesystem
         nx::fs::IFileSystem fileSystem;
@@ -37,10 +37,10 @@ namespace tin::util
         u64 cnmtNCASize = cnmtNCAFile.GetSize();
 
         // Prepare cnmt content record
-        nx::ncm::ContentRecord contentRecord;
-        contentRecord.ncaId = tin::util::GetNcaIdFromString(cnmtNCAName);
+        NcmContentInfo contentRecord;
+        contentRecord.content_id = tin::util::GetNcaIdFromString(cnmtNCAName);
         *(u64*)contentRecord.size = cnmtNCASize & 0xFFFFFFFFFFFF;
-        contentRecord.contentType = nx::ncm::ContentType::META;
+        contentRecord.content_type = NcmContentType_Meta;
 
         return contentRecord;
     }
@@ -70,7 +70,7 @@ namespace tin::util
         std::vector<std::string> nspList;
         nx::fs::IFileSystem fileSystem;
         fileSystem.OpenSdFileSystem();
-        nx::fs::IDirectory dir = fileSystem.OpenDirectory("/tinfoil/nsp/", FS_DIROPEN_FILE);
+        nx::fs::IDirectory dir = fileSystem.OpenDirectory("/tinfoil/nsp/", FsDirOpenMode_ReadFiles);
 
         u64 entryCount = dir.GetEntryCount();
 
@@ -84,7 +84,7 @@ namespace tin::util
             std::string dirEntryName(dirEntry.name);
             std::string ext = ".nsp";
 
-            if (dirEntry.type != ENTRYTYPE_FILE || dirEntryName.compare(dirEntryName.size() - ext.size(), ext.size(), ext) != 0)
+            if (dirEntry.type != FsDirEntryType_File || dirEntryName.compare(dirEntryName.size() - ext.size(), ext.size(), ext) != 0)
                 continue;
 
             nspList.push_back(dirEntry.name);

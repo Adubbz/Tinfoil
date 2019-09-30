@@ -8,92 +8,30 @@
 
 namespace nx::ncm
 {
-    enum class ContentMetaType : u8
-    {
-        SYSTEM_PROGRAM          = 0x1,
-        SYSTEM_DATA             = 0x2,
-        SYSTEM_UPDATE           = 0x3,
-        BOOT_IMAGE_PACKAGE      = 0x4,
-        BOOT_IMAGE_PACKAGE_SAFE = 0x5,
-        APPLICATION             = 0x80,
-        PATCH                   = 0x81,
-        ADD_ON_CONTENT          = 0x82,
-        DELTA                   = 0x83
-    };
-
-    enum class ContentType : u8
-    {
-        META                    = 0x0, 
-        PROGRAM                 = 0x1, 
-        DATA                    = 0x2, 
-        CONTROL                 = 0x3, 
-        HTML_DOCUMENT           = 0x4, 
-        LEGAL_INFORMATION       = 0x5, 
-        DELTA_FRAGMENT          = 0x6
-    };
-
-    struct ContentMetaHeader
-    {
-        u64 titleId;
-        u32 titleVersion;
-        ContentMetaType type;
-        u8 padding0;
-        u16 extendedHeaderSize;
-        u16 contentCount;
-        u16 contentMetaCount;
-        u8 attributes;
-        u8 padding1[0x3];
-        u32 requiredDownloadSystemVersion;
-        u8 padding2[0x4];
-    } PACKED;
-
-    static_assert(sizeof(ContentMetaHeader) == 0x20, "ContentMetaHeader must be 0x20!");
-
-    struct ApplicationMetaExtendedHeader
-    {
-        u64 patchTitleId;
-        u32 requiredSystemVersion;
-        u32 padding;
-    } PACKED;
-
-    struct PatchMetaExtendedHeader
-    {
-        u64 applicationTitleId;
-        u32 requiredSystemVersion;
-        u32 extendedDataSize;
-        u8 padding[0x8];
-    } PACKED;
-
-    struct AddOnContentMetaExtendedHeader
-    {
-        u64 applicationTitleId;
-        u32 requiredApplicationVersion;
-        u32 padding;
-    } PACKED;
-
-    struct ContentRecord
-    {
-        NcmNcaId ncaId;
-        u8 size[0x6];
-        ContentType contentType;
-        u8 unk;
-    } PACKED;
-
-    static_assert(sizeof(ContentRecord) == 0x18, "ContentRecord must be 0x18!");
-
-    struct HashedContentRecord
+    struct PackagedContentInfo
     {
         u8 hash[0x20];
-        ContentRecord record;
+        NcmContentInfo content_info;
     } PACKED;
 
-    struct InstallContentMetaHeader
+    struct PackagedContentMetaHeader
     {
-        u16 extendedHeaderSize;
-        u16 contentCount;
-        u16 contentMetaCount;
-        u16 padding;
-    } PACKED;
+        u64 title_id;
+        u32 version;
+        u8 type;
+        u8 _0xd;
+        u16 extended_header_size;
+        u16 content_count;
+        u16 content_meta_count;
+        u8 attributes;
+        u8 storage_id;
+        u8 install_type;
+        bool comitted;
+        u32 required_system_version;
+        u32 _0x1c;
+    };
+
+    static_assert(sizeof(PackagedContentMetaHeader) == 0x20, "PackagedContentMetaHeader must be 0x20!");
 
     class ContentMeta final
     {
@@ -104,10 +42,10 @@ namespace nx::ncm
             ContentMeta();
             ContentMeta(u8* data, size_t size);
 
-            ContentMetaHeader GetContentMetaHeader();
-            NcmMetaRecord GetContentMetaKey();
-            std::vector<ContentRecord> GetContentRecords();
+            PackagedContentMetaHeader GetPackagedContentMetaHeader();
+            NcmContentMetaKey GetContentMetaKey();
+            std::vector<NcmContentInfo> GetContentInfos();
 
-            void GetInstallContentMeta(tin::data::ByteBuffer& installContentMetaBuffer, ContentRecord& cnmtContentRecord, bool ignoreReqFirmVersion);
+            void GetInstallContentMeta(tin::data::ByteBuffer& installContentMetaBuffer, NcmContentInfo& cnmtContentInfo, bool ignoreReqFirmVersion);
     };
 }

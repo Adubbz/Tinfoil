@@ -13,7 +13,7 @@ namespace tin::util
     std::string GetNcaIdString(const NcmNcaId& ncaId);
     NcmNcaId GetNcaIdFromString(std::string ncaIdStr);
 
-    u64 GetBaseTitleId(u64 titleId, nx::ncm::ContentMetaType contentMetaType);
+    u64 GetBaseTitleId(u64 titleId, NcmContentMetaType contentMetaType);
     std::string GetBaseTitleName(u64 baseTitleId);
-    std::string GetTitleName(u64 titleId, nx::ncm::ContentMetaType contentMetaType);
+    std::string GetTitleName(u64 titleId, NcmContentMetaType contentMetaType);
 }

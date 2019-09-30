@@ -28,7 +28,7 @@ namespace tin::install
             Install(FsStorageId destStorageId, bool ignoreReqFirmVersion);
             virtual ~Install();
 
-            virtual std::tuple<nx::ncm::ContentMeta, nx::ncm::ContentRecord> ReadCNMT() = 0;
+            virtual std::tuple<nx::ncm::ContentMeta, NcmContentInfo> ReadCNMT() = 0;
 
             virtual void InstallContentMetaRecords(tin::data::ByteBuffer& installContentMetaBuf);
             virtual void InstallApplicationRecord();
@@ -40,7 +40,7 @@ namespace tin::install
             virtual void Begin();
 
             virtual u64 GetTitleId();
-            virtual nx::ncm::ContentMetaType GetContentMetaType();
+            virtual NcmContentMetaType GetContentMetaType();
 
             virtual void DebugPrintInstallData();
     };

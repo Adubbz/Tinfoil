@@ -16,7 +16,7 @@ namespace tin::install::nsp
         m_remoteNSP->RetrieveHeader();
     }
 
-    std::tuple<nx::ncm::ContentMeta, nx::ncm::ContentRecord> RemoteNSPInstall::ReadCNMT()
+    std::tuple<nx::ncm::ContentMeta, NcmContentInfo> RemoteNSPInstall::ReadCNMT()
     {
         const PFS0FileEntry* fileEntry = m_remoteNSP->GetFileEntryByExtension("cnmt.nca");
 
@@ -24,7 +24,7 @@ namespace tin::install::nsp
             THROW_FORMAT("Failed to find cnmt file entry!\n");
 
         std::string cnmtNcaName(m_remoteNSP->GetFileEntryName(fileEntry));
-        NcmNcaId cnmtNcaId = tin::util::GetNcaIdFromString(cnmtNcaName);
+        NcmNcaId cnmtContentId = tin::util::GetNcaIdFromString(cnmtNcaName);
         size_t cnmtNcaSize = fileEntry->fileSize;
 
         nx::ncm::ContentStorage contentStorage(m_destStorageId);
@@ -32,16 +32,16 @@ namespace tin::install::nsp
         printf("CNMT Name: %s\n", cnmtNcaName.c_str());
 
         // We install the cnmt nca early to read from it later
-        this->InstallNCA(cnmtNcaId);
-        std::string cnmtNCAFullPath = contentStorage.GetPath(cnmtNcaId);
+        this->InstallNCA(cnmtContentId);
+        std::string cnmtNCAFullPath = contentStorage.GetPath(cnmtContentId);
 
-        nx::ncm::ContentRecord cnmtContentRecord;
-        cnmtContentRecord.ncaId = cnmtNcaId;
-        *(u64*)&cnmtContentRecord.size = cnmtNcaSize & 0xFFFFFFFFFFFF;
-        cnmtContentRecord.contentType = nx::ncm::ContentType::META;
+        NcmContentInfo cnmtContentInfo;
+        cnmtContentInfo.content_id = cnmtContentId;
+        *(u64*)&cnmtContentInfo.size = cnmtNcaSize & 0xFFFFFFFFFFFF;
+        cnmtContentInfo.content_type = NcmContentType_Meta;
         consoleUpdate(NULL);
 
-        return { tin::util::GetContentMetaFromNCA(cnmtNCAFullPath), cnmtContentRecord };
+        return { tin::util::GetContentMetaFromNCA(cnmtNCAFullPath), cnmtContentInfo };
     }
 
     void RemoteNSPInstall::InstallNCA(const NcmNcaId& ncaId)

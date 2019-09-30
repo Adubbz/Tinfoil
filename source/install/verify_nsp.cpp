@@ -41,7 +41,7 @@ namespace tin::install
         tin::install::nsp::SimpleFileSystem simpleFS(nspFileSystem, "/", m_nspPath + "/");
 
         std::string cnmtNCAPath;
-        nx::ncm::ContentRecord cnmtContentRecord;
+        NcmContentInfo cnmtContentRecord;
         nx::ncm::ContentMeta contentMeta;
 
         try
@@ -65,7 +65,7 @@ namespace tin::install
         }
         this->PrintSuccess("Successfully read content meta.");
 
-        if (!simpleFS.HasFile(tin::util::GetNcaIdString(cnmtContentRecord.ncaId) + ".cnmt.xml"))
+        if (!simpleFS.HasFile(tin::util::GetNcaIdString(cnmtContentRecord.content_id) + ".cnmt.xml"))
             this->PrintWarning("CNMT XML is absent!");
         else
             this->PrintSuccess("CNMT XML is present.");
@@ -73,9 +73,9 @@ namespace tin::install
         auto contentMetaHeader = contentMeta.GetContentMetaHeader();
         u64 titleId = tin::util::GetBaseTitleId(contentMetaHeader.titleId, contentMetaHeader.type);
 
-        for (nx::ncm::ContentRecord contentRecord : contentMeta.GetContentRecords())
+        for (NcmContentInfo contentRecord : contentMeta.GetContentRecords())
         {
-            std::string ncaIdStr = tin::util::GetNcaIdString(contentRecord.ncaId);
+            std::string ncaIdStr = tin::util::GetNcaIdString(contentRecord.content_id);
             std::string ncaName = ncaIdStr + ".nca";
             std::string xmlName = ncaIdStr + ".";
 
@@ -91,15 +91,15 @@ namespace tin::install
 
             switch (contentRecord.contentType)
             {
-                case nx::ncm::ContentType::PROGRAM:
+                case NcmContentType_Program:
                     xmlName += "programinfo.xml";
                     break;
 
-                case nx::ncm::ContentType::DATA:
+                case NcmContentType_Data:
                     xmlName = "";
                     break;
 
-                case nx::ncm::ContentType::CONTROL:
+                case NcmContentType_Control:
                     try
                     {
                         nx::fs::IFileSystem controlFileSystem;
@@ -115,11 +115,11 @@ namespace tin::install
                     xmlName += "nacp.xml";
                     break;
 
-                case nx::ncm::ContentType::HTML_DOCUMENT:
+                case NcmContentType_HtmlDocument:
                     xmlName += "htmldocument.xml";
                     break;
 
-                case nx::ncm::ContentType::LEGAL_INFORMATION:
+                case NcmContentType_LegalInformation:
                     try
                     {
                         nx::fs::IFileSystem legalInfoFileSystem;
@@ -137,7 +137,7 @@ namespace tin::install
 
                 // We ignore delta fragments (for now) since they aren't all included,
                 // and we don't install them
-                case nx::ncm::ContentType::DELTA_FRAGMENT:
+                case NcmContentType_DeltaFragment:
                     continue;
 
                 default:

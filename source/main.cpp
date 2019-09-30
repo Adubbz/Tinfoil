@@ -46,9 +46,6 @@ bool g_shouldExit = false;
 
 void userAppInit(void)
 {
-    if (R_FAILED(ncmextInitialize()))
-        fatalSimple(0xBEEF);
-
     if (R_FAILED(ncmInitialize()))
         fatalSimple(0xBEE2);
 
@@ -92,7 +89,6 @@ void userAppExit(void)
     usbCommsExit();
     plExit();
     setExit();
-    ncmextExit();
     ncmExit();
     nsExit();
     nsextExit();
