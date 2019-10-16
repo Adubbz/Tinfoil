@@ -175,7 +175,7 @@ namespace tin::install
 
         NcmContentMetaDatabase contentMetaDatabase;
         NcmContentMetaKey metaRecord = m_contentMeta.GetContentMetaKey();
-        u64 baseTitleId = tin::util::GetBaseTitleId(metaRecord.titleId, static_cast<NcmContentMetaType>(metaRecord.type));
+        u64 baseTitleId = tin::util::GetBaseTitleId(metaRecord.title_id, static_cast<NcmContentMetaType>(metaRecord.type));
         u64 updateTitleId = baseTitleId ^ 0x800;
         bool hasUpdate = true;
 
@@ -184,12 +184,12 @@ namespace tin::install
             NcmContentMetaKey latestApplicationContentMetaKey;
             NcmContentMetaKey latestPatchContentMetaKey;
 
-            ASSERT_OK(ncmOpenContentMetaDatabase(m_destStorageId, &contentMetaDatabase), "Failed to open content meta database");
-            ASSERT_OK(ncmContentMetaDatabaseGetLatestContentMetaKey(&contentMetaDatabase, baseTitleId, &latestApplicationContentMetaKey), "Failed to get latest application content meta key");
+            ASSERT_OK(ncmOpenContentMetaDatabase(&contentMetaDatabase, m_destStorageId), "Failed to open content meta database");
+            ASSERT_OK(ncmContentMetaDatabaseGetLatestContentMetaKey(&contentMetaDatabase, &latestApplicationContentMetaKey, baseTitleId), "Failed to get latest application content meta key");
             
             try
             {
-                ASSERT_OK(ncmContentMetaDatabaseGetLatestContentMetaKey(&contentMetaDatabase, updateTitleId, &latestPatchContentMetaKey), "Failed to get latest patch content meta key");
+                ASSERT_OK(ncmContentMetaDatabaseGetLatestContentMetaKey(&contentMetaDatabase, &latestPatchContentMetaKey, updateTitleId), "Failed to get latest patch content meta key");
             }
             catch (std::exception& e)
             {
@@ -198,10 +198,10 @@ namespace tin::install
 
             u64 appContentRecordSize;
             u64 appContentRecordSizeRead;
-            ASSERT_OK(ncmContentMetaDatabaseGetSize(&contentMetaDatabase, &latestApplicationContentMetaKey, &appContentRecordSize), "Failed to get application content record size");
+            ASSERT_OK(ncmContentMetaDatabaseGetSize(&contentMetaDatabase, &appContentRecordSize,  &latestApplicationContentMetaKey), "Failed to get application content record size");
             
             auto appContentRecordBuf = std::make_unique<u8[]>(appContentRecordSize);
-            ASSERT_OK(ncmContentMetaDatabaseGet(&contentMetaDatabase, &latestApplicationContentMetaKey, appContentRecordSize, (NcmContentMetaHeader*)appContentRecordBuf.get(), &appContentRecordSizeRead), "Failed to get app content record size");
+            ASSERT_OK(ncmContentMetaDatabaseGet(&contentMetaDatabase, &latestApplicationContentMetaKey, &appContentRecordSizeRead, (NcmContentMetaHeader*)appContentRecordBuf.get(), appContentRecordSizeRead), "Failed to get app content record size");
 
             if (appContentRecordSize != appContentRecordSizeRead)
             {
@@ -217,10 +217,10 @@ namespace tin::install
             {
                 u64 patchContentRecordsSize;
                 u64 patchContentRecordSizeRead;
-                ASSERT_OK(ncmContentMetaDatabaseGetSize(&contentMetaDatabase, &latestPatchContentMetaKey, &patchContentRecordsSize), "Failed to get patch content record size");
+                ASSERT_OK(ncmContentMetaDatabaseGetSize(&contentMetaDatabase, &patchContentRecordsSize, &latestPatchContentMetaKey), "Failed to get patch content record size");
             
                 auto patchContentRecordBuf = std::make_unique<u8[]>(patchContentRecordsSize);
-                ASSERT_OK(ncmContentMetaDatabaseGet(&contentMetaDatabase, &latestPatchContentMetaKey, patchContentRecordsSize, (NcmContentMetaHeader*)patchContentRecordBuf.get(), &patchContentRecordSizeRead), "Failed to get patch content record size");
+                ASSERT_OK(ncmContentMetaDatabaseGet(&contentMetaDatabase, &latestPatchContentMetaKey, &patchContentRecordSizeRead, (NcmContentMetaHeader*)patchContentRecordBuf.get(), patchContentRecordsSize), "Failed to get patch content record size");
             
                 if (patchContentRecordsSize != patchContentRecordSizeRead)
                 {

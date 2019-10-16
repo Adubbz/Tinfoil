@@ -17,7 +17,7 @@ Result ncmextInitialize(void)
     rc = smGetService(&g_ncmSrv, "ncm");
 
     if (R_SUCCEEDED(rc))
-        smAddOverrideHandle(smEncodeName("ncm"), g_ncmSrv.handle);
+        smAddOverrideHandle(smEncodeName("ncm"), g_ncmSrv.own_handle);
 
     return rc;
 }
@@ -163,44 +163,6 @@ Result ncmDelete(NcmContentStorage* cs, const NcmNcaId* registeredId)
         } *resp = r.Raw;
 
         rc = resp->result;
-    }
-    
-    return rc;
-}
-
-Result ncmContentMetaDatabaseGetSize(NcmContentMetaDatabase* db, const NcmMetaRecord *record, u64* sizeOut) 
-{
-    IpcCommand c;
-    ipcInitialize(&c);
-
-    struct {
-        u64 magic;
-        u64 cmd_id;
-        NcmMetaRecord meta_record;
-    } *raw;
-    
-    raw = ipcPrepareHeader(&c, sizeof(*raw));
-    
-    raw->magic = SFCI_MAGIC;
-    raw->cmd_id = 10;
-    memcpy(&raw->meta_record, record, sizeof(NcmMetaRecord));
-    
-    Result rc = serviceIpcDispatch(&db->s);
-    if (R_SUCCEEDED(rc)) {
-        IpcParsedCommand r;
-        ipcParse(&r);
-
-        struct {
-            u64 magic;
-            u64 result;
-            u64 size_out;
-        } *resp = r.Raw;
-
-        rc = resp->result;
-
-        if (R_SUCCEEDED(rc)) {
-            if (sizeOut) *sizeOut = resp->size_out;
-        }
     }
     
     return rc;

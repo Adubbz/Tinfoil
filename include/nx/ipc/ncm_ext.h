@@ -9,5 +9,3 @@ Result ncmCreatePlaceHolder(NcmContentStorage* cs, const NcmNcaId* placeholderId
 Result ncmDeletePlaceHolder(NcmContentStorage* cs, const NcmNcaId* placeholderId);
 Result ncmWritePlaceHolder(NcmContentStorage* cs, const NcmNcaId* placeholderId, u64 offset, void* buffer, size_t bufSize);
 Result ncmDelete(NcmContentStorage* cs, const NcmNcaId* registeredId);
-
-Result ncmContentMetaDatabaseGetSize(NcmContentMetaDatabase* db, const NcmMetaRecord *record, u64* sizeOut);
