@@ -8,6 +8,7 @@ typedef struct {
 
 Result esInitialize();
 void esExit();
+Service* esGetServiceSession();
 
 Result esImportTicket(void const *tikBuf, size_t tikSize, void const *certBuf, size_t certSize); //1
 Result esDeleteTicket(const RightsId *rightsIdBuf, size_t bufSize); //3
