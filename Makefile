@@ -39,7 +39,7 @@ EXEFS_SRC   := exefs_src
 #ROMFS       := romfs
 APP_TITLE   := Tinfoil
 APP_AUTHOR  := Adubbz
-APP_VERSION := 0.2.1
+APP_VERSION := 0.3.0
 
 #---------------------------------------------------------------------------------
 # options for code generation
@@ -58,14 +58,14 @@ ARCH	:=	-march=armv8-a -mtune=cortex-a57 -mtp=soft -fPIE
 CFLAGS	:=	-g -Wall -O2 -ffunction-sections \
 			$(ARCH) $(DEFINES) $(CFLAGS)
 
-CFLAGS	+=	$(INCLUDE) -D__SWITCH__ `freetype-config --cflags`
+CFLAGS	+=	$(INCLUDE) -D__SWITCH__ -DAUTISM `freetype-config --cflags`
 
 CXXFLAGS	:= $(CFLAGS) -fno-rtti -std=gnu++17 $(CXXFLAGS)
 
 ASFLAGS	:=	-g $(ARCH)
 LDFLAGS	=	-specs=$(DEVKITPRO)/libnx/switch.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
-LIBS	:= `freetype-config --libs` -lcurl -lmbedtls -lmbedx509 -lmbedcrypto -lz -lnx
+LIBS	:= `freetype-config --libs` -lzstd -lcurl -lmbedtls -lmbedx509 -lmbedcrypto -lz -lnx
 
 
 

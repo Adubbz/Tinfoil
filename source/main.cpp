@@ -70,6 +70,12 @@ void userAppInit(void)
     if (R_FAILED(usbCommsInitialize()))
         fatalSimple(0xBEEA);
 
+    if (R_FAILED(splCryptoInitialize()))
+        fatalSimple(0xBEEB);
+
+    if (R_FAILED(splInitialize()))
+        fatalSimple(0xBEEC);
+
     // We initialize this inside ui_networkinstall_mode for normal users.
     #ifdef NXLINK_DEBUG
     socketInitializeDefault();
@@ -79,6 +85,9 @@ void userAppInit(void)
 
 void userAppExit(void)
 {
+     splExit();
+     splCryptoExit();
+
     nifmExit();
 
     #ifdef NXLINK_DEBUG
@@ -143,7 +152,7 @@ int main(int argc, char **argv)
         mainView->AddEntry(translate(Translate::INSTALL_INFORMATION), tin::ui::ConsoleEntrySelectType::SELECT_INACTIVE, nullptr);
         mainView->AddEntry(translate(Translate::TICKET_MANAGEMENT), tin::ui::ConsoleEntrySelectType::SELECT, std::bind(&tin::ui::Category::OnSelected, &tikManCat));
         mainView->AddEntry(translate(Translate::EXIT), tin::ui::ConsoleEntrySelectType::SELECT, markForExit);
-        
+
         manager.PushView(std::move(mainView));
 
         while (appletMainLoop() && !g_shouldExit)

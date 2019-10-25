@@ -51,7 +51,7 @@ namespace nx::ncm
         for (unsigned int i = 0; i < contentMetaHeader.content_count; i++)
         {
             PackagedContentInfo packagedContentInfo = packagedContentInfos[i];
-            
+
             // Don't install delta fragments. Even patches don't seem to install them.
             if (static_cast<u8>(packagedContentInfo.content_info.content_type) <= 5)
             {

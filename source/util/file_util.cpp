@@ -14,11 +14,12 @@ namespace tin::util
         // Open filesystem
         nx::fs::IFileSystem fileSystem;
         std::string nspExt = ".nsp";
+          std::string nszExt = ".nsz";
         std::string rootPath = "/";
         std::string absolutePath = nspPath + "/";
 
         // Check if this is an nsp file
-        if (nspPath.compare(nspPath.size() - nspExt.size(), nspExt.size(), nspExt) == 0)
+        if (nspPath.compare(nspPath.size() - nspExt.size(), nspExt.size(), nspExt) == 0 || nspPath.compare(nspPath.size() - nszExt.size(), nszExt.size(), nszExt) == 0)
         {
             fileSystem.OpenFileSystemWithId(nspPath, FsFileSystemType_ApplicationPackage, 0);
         }
@@ -28,7 +29,7 @@ namespace tin::util
             rootPath = nspPath.substr(9) + "/";
             absolutePath = nspPath + "/";
         }
-        
+
         tin::install::nsp::SimpleFileSystem simpleFS(fileSystem, rootPath, absolutePath);
 
         // Create the path of the cnmt NCA
@@ -52,7 +53,7 @@ namespace tin::util
         nx::fs::IFileSystem cnmtNCAFileSystem;
         cnmtNCAFileSystem.OpenFileSystemWithId(ncaPath, FsFileSystemType_ContentMeta, 0);
         tin::install::nsp::SimpleFileSystem cnmtNCASimpleFileSystem(cnmtNCAFileSystem, "/", ncaPath + "/");
-        
+
         // Find and read the cnmt file
         auto cnmtName = cnmtNCASimpleFileSystem.GetFileNameFromExtension("", "cnmt");
         auto cnmtFile = cnmtNCASimpleFileSystem.OpenFile(cnmtName);
@@ -82,9 +83,10 @@ namespace tin::util
         {
             FsDirectoryEntry dirEntry = dirEntries[i];
             std::string dirEntryName(dirEntry.name);
-            std::string ext = ".nsp";
+            std::string nspExt = ".nsp";
+               std::string nszExt = ".nsz";
 
-            if (dirEntry.type != FsDirEntryType_File || dirEntryName.compare(dirEntryName.size() - ext.size(), ext.size(), ext) != 0)
+            if (dirEntry.type != FsDirEntryType_File || (dirEntryName.compare(dirEntryName.size() - nspExt.size(), nspExt.size(), nspExt) != 0 && dirEntryName.compare(dirEntryName.size() - nszExt.size(), nszExt.size(), nszExt) != 0))
                 continue;
 
             nspList.push_back(dirEntry.name);

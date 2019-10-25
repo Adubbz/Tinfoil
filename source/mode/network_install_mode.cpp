@@ -47,7 +47,7 @@ namespace tin::ui
     {
         // Create a socket
         m_serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_IP);
-    
+
         if (m_serverSocket < -1)
         {
             THROW_FORMAT("Failed to create a server socket. Error code: %u\n", errno);
@@ -129,7 +129,7 @@ namespace tin::ui
             printf("%s %s\n", translate(Translate::SWITCH_IP_IS), inet_ntoa(addr));
             printf("%s\n", translate(Translate::NSP_INSTALL_NETWORK_WAITING));
             printf("%s\n", translate(Translate::PRESS_B_CANCEL));
-            
+
             std::vector<std::string> urls;
 
             bool canceled = false;
@@ -181,10 +181,11 @@ namespace tin::ui
                     std::stringstream urlStream(urlBuf.get());
                     std::string segment;
                     std::string nspExt = ".nsp";
+                    std::string nszExt = ".nsz";
 
                     while (std::getline(urlStream, segment, '\n'))
                     {
-                        if (segment.compare(segment.size() - nspExt.size(), nspExt.size(), nspExt) == 0)
+                        if (segment.compare(segment.size() - nspExt.size(), nspExt.size(), nspExt) == 0 || segment.compare(segment.size() - nszExt.size(), nszExt.size(), nszExt) == 0)
                             urls.push_back(segment);
                     }
 
@@ -201,7 +202,7 @@ namespace tin::ui
                 auto view = std::make_unique<tin::ui::ConsoleCheckboxView>(std::bind(&NetworkInstallMode::OnNSPSelected, this), DEFAULT_TITLE, 2);
                 view->AddEntry(translate(Translate::NSP_SELECT), tin::ui::ConsoleEntrySelectType::HEADING, nullptr);
                 view->AddEntry("", tin::ui::ConsoleEntrySelectType::NONE, nullptr);
-                
+
                 for (auto& url : urls)
                 {
                     view->AddEntry(url, tin::ui::ConsoleEntrySelectType::SELECT, nullptr);
@@ -265,7 +266,7 @@ namespace tin::ui
 
         auto view = std::make_unique<tin::ui::ConsoleView>(4);
         manager.PushView(std::move(view));
-                    
+
         for (auto& url : m_urls)
         {
             tin::install::nsp::HTTPNSP httpNSP(url);

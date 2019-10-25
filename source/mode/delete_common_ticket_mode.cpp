@@ -40,7 +40,7 @@ namespace tin::ui
         for (unsigned int i = 0; i < numRightsIdsWritten; i++)
         {
             RightsId rightsId = rightsIdBuf[i];
-        
+
             view->AddEntry(std::make_unique<RightsIdOptionValue>(rightsId), tin::ui::ConsoleEntrySelectType::SELECT, std::bind(&DeleteCommonTicketMode::OnRightsIdSelected, this));
         }
 

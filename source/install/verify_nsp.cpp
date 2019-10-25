@@ -53,7 +53,7 @@ namespace tin::install
             this->PrintCritical("Failed to find CNMT NCA. Error: " + std::string(e.what()));
             return false;
         }
-        
+
         try
         {
             contentMeta = tin::util::GetContentMetaFromNCA(cnmtNCAPath);

@@ -56,7 +56,7 @@ namespace tin::install::nsp
         return 0;
     }
 
-    void HTTPNSP::StreamToPlaceholder(nx::ncm::ContentStorage& contentStorage, NcmNcaId placeholderId)
+    void HTTPNSP::StreamToPlaceholder(std::shared_ptr<nx::ncm::ContentStorage>& contentStorage, NcmNcaId placeholderId)
     {
         const PFS0FileEntry* fileEntry = this->GetFileEntryByNcaId(placeholderId);
         std::string ncaFileName = this->GetFileEntryName(fileEntry);
@@ -64,7 +64,7 @@ namespace tin::install::nsp
         LOG_DEBUG("Retrieving %s\n", ncaFileName.c_str());
         size_t ncaSize = fileEntry->fileSize;
 
-        tin::data::BufferedPlaceholderWriter bufferedPlaceholderWriter(&contentStorage, placeholderId, ncaSize);
+        tin::data::BufferedPlaceholderWriter bufferedPlaceholderWriter(contentStorage, placeholderId, ncaSize);
         StreamFuncArgs args;
         args.download = &m_download;
         args.bufferedPlaceholderWriter = &bufferedPlaceholderWriter;
@@ -75,7 +75,7 @@ namespace tin::install::nsp
 
         thrd_create(&curlThread, CurlStreamFunc, &args);
         thrd_create(&writeThread, PlaceholderWriteFunc, &args);
-        
+
         u64 freq = armGetSystemTickFreq();
         u64 startTime = armGetSystemTick();
         size_t startSizeBuffered = 0;

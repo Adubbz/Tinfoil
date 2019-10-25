@@ -10,11 +10,11 @@ namespace tin::util
 
         if (text.size() > consoleWidth)
             return;
-        
+
         int totalPaddingSize = consoleWidth - text.size();
         int rightPadding = totalPaddingSize / 2;
         int leftPadding = totalPaddingSize - rightPadding;
-        
+
         printf("%s%s%s\n", std::string(leftPadding, ' ').c_str(), text.c_str(), std::string(rightPadding, ' ').c_str());
     }
 }

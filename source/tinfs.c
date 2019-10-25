@@ -9,7 +9,7 @@ Result createTinfoilDirs(void)
     Result rc = 0;
     FsFileSystem sdFs;
 
-    if (R_FAILED(rc = fsMountSdcard(&sdFs)))
+    if (R_FAILED(rc = fsOpenSdCardFileSystem(&sdFs)))
     {
         printf("createTinfoilDirs: Failed to mount sd card. Error code: 0x%08x\n", rc);
         return rc;

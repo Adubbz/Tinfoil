@@ -17,7 +17,7 @@ namespace nx::ncm
     {
         ASSERT_OK(ncmContentStorageCreatePlaceHolder(&m_contentStorage, &placeholderId, &registeredId, size), "Failed to create placeholder");
     }
-            
+
     void ContentStorage::DeletePlaceholder(const NcmNcaId &placeholderId)
     {
         ASSERT_OK(ncmContentStorageDeletePlaceHolder(&m_contentStorage, &placeholderId), "Failed to delete placeholder");

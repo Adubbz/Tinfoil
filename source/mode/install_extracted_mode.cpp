@@ -138,7 +138,7 @@ namespace tin::ui
             LOG_DEBUG("%s", e.what());
             fprintf(stdout, "%s", e.what());
         }
-        
+
         printf("%s\n\n%s\n", translate(Translate::DONE), translate(Translate::PRESS_B_RETURN));
     }
 }

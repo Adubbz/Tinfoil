@@ -52,26 +52,26 @@ namespace tin::install::nsp
 
         printf("Installing %s to storage Id %u\n", ncaFileName.c_str(), m_destStorageId);
 
-        nx::ncm::ContentStorage contentStorage(m_destStorageId);
+        std::shared_ptr<nx::ncm::ContentStorage> contentStorage(new nx::ncm::ContentStorage(m_destStorageId));
 
         // Attempt to delete any leftover placeholders
         try
         {
-            contentStorage.DeletePlaceholder(ncaId);
+            contentStorage->DeletePlaceholder(ncaId);
         }
         catch (...) {}
 
         LOG_DEBUG("Size: 0x%lx\n", ncaSize);
-        contentStorage.CreatePlaceholder(ncaId, ncaId, ncaSize);
+
         m_remoteNSP->StreamToPlaceholder(contentStorage, ncaId);
 
         // Clean up the line for whatever comes next
         printf("                                                           \r");
         printf("Registering placeholder...\n");
-        
+
         try
         {
-            contentStorage.Register(ncaId, ncaId);
+            contentStorage->Register(ncaId, ncaId);
         }
         catch (...)
         {
@@ -80,7 +80,7 @@ namespace tin::install::nsp
 
         try
         {
-            contentStorage.DeletePlaceholder(ncaId);
+            contentStorage->DeletePlaceholder(ncaId);
         }
         catch (...) {}
 

@@ -38,7 +38,7 @@ namespace tin::install::nsp
     {
         if (index >= this->GetBaseHeader()->numFiles)
             THROW_FORMAT("File entry index is out of bounds\n")
-    
+
         size_t fileEntryOffset = sizeof(PFS0BaseHeader) + index * sizeof(PFS0FileEntry);
 
         if (m_headerBytes.size() < fileEntryOffset + sizeof(PFS0FileEntry))
@@ -85,7 +85,13 @@ namespace tin::install::nsp
         {
             if ((fileEntry = this->GetFileEntryByName(ncaIdStr + ".cnmt.nca")) == nullptr)
             {
-                return nullptr;
+                    if ((fileEntry = this->GetFileEntryByName(ncaIdStr + ".ncz")) == nullptr)
+                    {
+                         if ((fileEntry = this->GetFileEntryByName(ncaIdStr + ".cnmt.ncz")) == nullptr)
+                         {
+                              return nullptr;
+                         }
+                    }
             }
         }
 

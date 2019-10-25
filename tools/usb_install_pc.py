@@ -97,7 +97,7 @@ def send_nsp_list(nsp_dir, out_ep):
     nsp_path_list_len = 0
 
     # Add all files with the extension .nsp in the provided dir
-    for nsp_path in [f for f in nsp_dir.iterdir() if f.is_file() and f.suffix == '.nsp']:
+    for nsp_path in [f for f in nsp_dir.iterdir() if f.is_file() and (f.suffix == '.nsp' or f.suffix == '.nsz')]:
         nsp_path_list.append(nsp_path.__str__() + '\n')
         nsp_path_list_len += len(nsp_path.__str__()) + 1
 

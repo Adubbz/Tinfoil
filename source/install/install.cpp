@@ -41,7 +41,7 @@ namespace tin::install
             serviceClose(&contentMetaDatabase.s);
             throw e;
         }
-        
+
         serviceClose(&contentMetaDatabase.s);
         consoleUpdate(NULL);
     }
@@ -186,7 +186,7 @@ namespace tin::install
 
             ASSERT_OK(ncmOpenContentMetaDatabase(&contentMetaDatabase, m_destStorageId), "Failed to open content meta database");
             ASSERT_OK(ncmContentMetaDatabaseGetLatestContentMetaKey(&contentMetaDatabase, &latestApplicationContentMetaKey, baseTitleId), "Failed to get latest application content meta key");
-            
+
             try
             {
                 ASSERT_OK(ncmContentMetaDatabaseGetLatestContentMetaKey(&contentMetaDatabase, &latestPatchContentMetaKey, updateTitleId), "Failed to get latest patch content meta key");
@@ -199,7 +199,7 @@ namespace tin::install
             u64 appContentRecordSize;
             u64 appContentRecordSizeRead;
             ASSERT_OK(ncmContentMetaDatabaseGetSize(&contentMetaDatabase, &appContentRecordSize,  &latestApplicationContentMetaKey), "Failed to get application content record size");
-            
+
             auto appContentRecordBuf = std::make_unique<u8[]>(appContentRecordSize);
             ASSERT_OK(ncmContentMetaDatabaseGet(&contentMetaDatabase, &latestApplicationContentMetaKey, &appContentRecordSizeRead, (NcmContentMetaHeader*)appContentRecordBuf.get(), appContentRecordSizeRead), "Failed to get app content record size");
 
@@ -218,10 +218,10 @@ namespace tin::install
                 u64 patchContentRecordsSize;
                 u64 patchContentRecordSizeRead;
                 ASSERT_OK(ncmContentMetaDatabaseGetSize(&contentMetaDatabase, &patchContentRecordsSize, &latestPatchContentMetaKey), "Failed to get patch content record size");
-            
+
                 auto patchContentRecordBuf = std::make_unique<u8[]>(patchContentRecordsSize);
                 ASSERT_OK(ncmContentMetaDatabaseGet(&contentMetaDatabase, &latestPatchContentMetaKey, &patchContentRecordSizeRead, (NcmContentMetaHeader*)patchContentRecordBuf.get(), patchContentRecordsSize), "Failed to get patch content record size");
-            
+
                 if (patchContentRecordsSize != patchContentRecordSizeRead)
                 {
                     throw std::runtime_error("Mismatch between app content record size and content record size read");

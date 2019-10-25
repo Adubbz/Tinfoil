@@ -141,12 +141,12 @@ elif len(sys.argv) < 3 or len(sys.argv) > 6:
           ' [host ip] [host port]')
     sys.exit(1)
 
-accepted_extension = ('.nsp')
+
 hostPort = 8080  # Default value
 
 if interactive:
     target_ip = input("The IP of your Switch: ")
-    target_path = input("The file you want to send (.nsp): ")
+    target_path = input("The file you want to send (.nsp, .nsz): ")
 
     hostIp = input("Host IP "
                    "(or press Enter to have the script detect host IP):")
@@ -198,17 +198,17 @@ print('Preparing data...')
 baseUrl = hostIp + ':' + str(hostPort) + '/'
 
 if os.path.isfile(target_path):
-    if target_path.endswith(accepted_extension):
+    if target_path.endswith('.nsp') or target_path.endswith('.nsz'):
         file_list_payload = baseUrl + quote(os.path.basename(target_path))
         directory = os.path.dirname(target_path)  # get file directory
     else:
-        print('Unsupported file extension. Supported extensions are: ' + accepted_extension)
+        print('Unsupported file extension. Supported extensions are: .nsp, .nsz')
         sys.exit(1)
 
 else:
     directory = target_path  # it's a directory
     file_list_payload = ''  # init the payload before adding lines
-    for file in [file for file in next(os.walk(target_path))[2] if file.endswith(accepted_extension)]:
+    for file in [file for file in next(os.walk(target_path))[2] if file.endswith('.nsp') or file.endswith('.nsz')]:
         file_list_payload += baseUrl + quote(file) + '\n'
 
 if len(file_list_payload) == 0:

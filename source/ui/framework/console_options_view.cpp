@@ -93,7 +93,7 @@ namespace tin::ui
     ConsoleEntry::ConsoleEntry(std::unique_ptr<IOptionValue> optionValue, ConsoleEntrySelectType selectType, std::function<void ()> onSelected) :
         optionValue(std::move(optionValue)), selectType(selectType), onSelected(onSelected)
     {
-        
+
     }
 
     // End ConsoleEntry
@@ -182,7 +182,7 @@ namespace tin::ui
             // Numbers greater than the number of entries should wrap around to the start
             newCursorPos %= m_consoleEntries.size();
             ConsoleEntry* entry = m_consoleEntries.at(newCursorPos).get();
-        
+
             if (entry->selectType == ConsoleEntrySelectType::SELECT)
             {
                 m_cursorPos = newCursorPos;

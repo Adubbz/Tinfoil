@@ -9,7 +9,7 @@ namespace tin::ui
     {
 
     }
-    
+
     void ConsoleView::OnPresented()
     {
         consoleClear();
@@ -20,6 +20,6 @@ namespace tin::ui
         if (keys & KEY_B)
             m_viewManager->Unwind(m_unwindDistance);
     }
-    
+
     void ConsoleView::Update() {}
 };

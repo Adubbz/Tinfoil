@@ -10,7 +10,7 @@
 namespace tin::network
 {
     // HTTPHeader
- 
+
     HTTPHeader::HTTPHeader(std::string url) :
         m_url(url)
     {

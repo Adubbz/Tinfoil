@@ -35,7 +35,7 @@ namespace tin::ui
                     view->m_onUnwound();
                 m_views.pop();
             }
-        
+
             this->GetCurrentView()->OnPresented();
         }
         else

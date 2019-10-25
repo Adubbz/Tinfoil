@@ -9,8 +9,8 @@
 
 namespace tin::data
 {
-    BufferedPlaceholderWriter::BufferedPlaceholderWriter(nx::ncm::ContentStorage* contentStorage, NcmNcaId ncaId, size_t totalDataSize) :
-        m_totalDataSize(totalDataSize), m_contentStorage(contentStorage), m_ncaId(ncaId)
+    BufferedPlaceholderWriter::BufferedPlaceholderWriter(std::shared_ptr<nx::ncm::ContentStorage>& contentStorage, NcmNcaId ncaId, size_t totalDataSize) :
+        m_totalDataSize(totalDataSize), m_contentStorage(contentStorage), m_ncaId(ncaId), m_writer(ncaId, contentStorage)
     {
         // Though currently the number of segments is fixed, we want them allocated on the heap, not the stack
         m_bufferSegments = std::make_unique<BufferSegment[]>(NUM_BUFFER_SEGMENTS);
@@ -51,7 +51,7 @@ namespace tin::data
                 sourceOffset += bufferSegmentSizeRemaining;
                 m_currentFreeSegmentPtr->writeOffset += bufferSegmentSizeRemaining;
                 m_currentFreeSegmentPtr->isFinalized = true;
-                
+
                 m_currentFreeSegment = (m_currentFreeSegment + 1) % NUM_BUFFER_SEGMENTS;
                 m_currentFreeSegmentPtr = &m_bufferSegments[m_currentFreeSegment];
             }
@@ -87,7 +87,7 @@ namespace tin::data
         // NOTE: The final segment will have leftover data from previous writes, however
         // this will be accounted for by this size
         size_t sizeToWriteToPlaceholder = std::min(m_totalDataSize - m_sizeWrittenToPlaceholder, BUFFER_SEGMENT_DATA_SIZE);
-        m_contentStorage->WritePlaceholder(m_ncaId, m_sizeWrittenToPlaceholder, m_currentSegmentToWritePtr->data, sizeToWriteToPlaceholder);
+          m_writer.write(m_currentSegmentToWritePtr->data, sizeToWriteToPlaceholder);
 
         m_currentSegmentToWritePtr->isFinalized = false;
         m_currentSegmentToWritePtr->writeOffset = 0;
@@ -137,7 +137,7 @@ namespace tin::data
         {
             unsigned int segmentIndex = m_currentFreeSegment + i;
             BufferSegment* bufferSegment = &m_bufferSegments[segmentIndex % NUM_BUFFER_SEGMENTS];
-        
+
             if (bufferSegment->isFinalized)
                 return false;
 
