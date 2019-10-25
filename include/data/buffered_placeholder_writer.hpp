@@ -35,12 +35,12 @@ namespace tin::data
             std::unique_ptr<BufferSegment[]> m_bufferSegments;
 
             nx::ncm::ContentStorage* m_contentStorage;
-            NcmNcaId m_ncaId;
+            NcmContentId m_ncaId;
 
         public:
             static const int NUM_BUFFER_SEGMENTS = 4;
 
-            BufferedPlaceholderWriter(nx::ncm::ContentStorage* contentStorage, NcmNcaId ncaId, size_t totalDataSize);
+            BufferedPlaceholderWriter(nx::ncm::ContentStorage* contentStorage, NcmContentId ncaId, size_t totalDataSize);
 
             void AppendData(void* source, size_t length);
             bool CanAppendData(size_t length);

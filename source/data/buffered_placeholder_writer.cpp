@@ -9,7 +9,7 @@
 
 namespace tin::data
 {
-    BufferedPlaceholderWriter::BufferedPlaceholderWriter(nx::ncm::ContentStorage* contentStorage, NcmNcaId ncaId, size_t totalDataSize) :
+    BufferedPlaceholderWriter::BufferedPlaceholderWriter(nx::ncm::ContentStorage* contentStorage, NcmContentId ncaId, size_t totalDataSize) :
         m_totalDataSize(totalDataSize), m_contentStorage(contentStorage), m_ncaId(ncaId)
     {
         // Though currently the number of segments is fixed, we want them allocated on the heap, not the stack

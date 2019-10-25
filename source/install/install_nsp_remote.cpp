@@ -24,7 +24,7 @@ namespace tin::install::nsp
             THROW_FORMAT("Failed to find cnmt file entry!\n");
 
         std::string cnmtNcaName(m_remoteNSP->GetFileEntryName(fileEntry));
-        NcmNcaId cnmtContentId = tin::util::GetNcaIdFromString(cnmtNcaName);
+        NcmContentId cnmtContentId = tin::util::GetNcaIdFromString(cnmtNcaName);
         size_t cnmtNcaSize = fileEntry->fileSize;
 
         nx::ncm::ContentStorage contentStorage(m_destStorageId);
@@ -44,7 +44,7 @@ namespace tin::install::nsp
         return { tin::util::GetContentMetaFromNCA(cnmtNCAFullPath), cnmtContentInfo };
     }
 
-    void RemoteNSPInstall::InstallNCA(const NcmNcaId& ncaId)
+    void RemoteNSPInstall::InstallNCA(const NcmContentId& ncaId)
     {
         const PFS0FileEntry* fileEntry = m_remoteNSP->GetFileEntryByNcaId(ncaId);
         std::string ncaFileName = m_remoteNSP->GetFileEntryName(fileEntry);

@@ -78,7 +78,7 @@ namespace tin::install::nsp
         return 0;
     }
 
-    void USBNSP::StreamToPlaceholder(nx::ncm::ContentStorage& contentStorage, NcmNcaId placeholderId)
+    void USBNSP::StreamToPlaceholder(nx::ncm::ContentStorage& contentStorage, NcmContentId placeholderId)
     {
         const PFS0FileEntry* fileEntry = this->GetFileEntryByNcaId(placeholderId);
         std::string ncaFileName = this->GetFileEntryName(fileEntry);

@@ -15,7 +15,7 @@ namespace tin::install::nsp
 
         protected:
             std::tuple<nx::ncm::ContentMeta, NcmContentInfo> ReadCNMT() override;
-            void InstallNCA(const NcmNcaId& ncaId) override;
+            void InstallNCA(const NcmContentId& ncaId) override;
             void InstallTicketCert() override;
 
         public:

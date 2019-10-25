@@ -15,7 +15,7 @@ namespace tin::util
         return __bswap64(*(u64 *)(rightsId.c + 8));
     }
 
-    std::string GetNcaIdString(const NcmNcaId& ncaId)
+    std::string GetNcaIdString(const NcmContentId& ncaId)
     {
         char ncaIdStr[FS_MAX_PATH] = {0};
         u64 ncaIdLower = __bswap64(*(u64 *)ncaId.c);
@@ -24,9 +24,9 @@ namespace tin::util
         return std::string(ncaIdStr);
     }
 
-    NcmNcaId GetNcaIdFromString(std::string ncaIdStr)
+    NcmContentId GetNcaIdFromString(std::string ncaIdStr)
     {
-        NcmNcaId ncaId = {0};
+        NcmContentId ncaId = {0};
         char lowerU64[17] = {0};
         char upperU64[17] = {0};
         memcpy(lowerU64, ncaIdStr.c_str(), 16);

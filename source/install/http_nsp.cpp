@@ -56,7 +56,7 @@ namespace tin::install::nsp
         return 0;
     }
 
-    void HTTPNSP::StreamToPlaceholder(nx::ncm::ContentStorage& contentStorage, NcmNcaId placeholderId)
+    void HTTPNSP::StreamToPlaceholder(nx::ncm::ContentStorage& contentStorage, NcmContentId placeholderId)
     {
         const PFS0FileEntry* fileEntry = this->GetFileEntryByNcaId(placeholderId);
         std::string ncaFileName = this->GetFileEntryName(fileEntry);

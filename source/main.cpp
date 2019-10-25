@@ -47,28 +47,28 @@ bool g_shouldExit = false;
 void userAppInit(void)
 {
     if (R_FAILED(ncmInitialize()))
-        fatalSimple(0xBEE2);
+        fatalThrow(0xBEE2);
 
     if (R_FAILED(nsInitialize()))
-        fatalSimple(0xBEE3);
+        fatalThrow(0xBEE3);
 
     if (R_FAILED(nsextInitialize()))
-        fatalSimple(0xBEE4);
+        fatalThrow(0xBEE4);
 
     if (R_FAILED(esInitialize()))
-        fatalSimple(0xBEE5);
+        fatalThrow(0xBEE5);
 
     if (R_FAILED(nifmInitialize()))
-        fatalSimple(0xBEE6);
+        fatalThrow(0xBEE6);
 
     if (R_FAILED(setInitialize()))
-        fatalSimple(0xBEE7);
+        fatalThrow(0xBEE7);
 
     if (R_FAILED(plInitialize()))
-        fatalSimple(0xBEE8);
+        fatalThrow(0xBEE8);
 
     if (R_FAILED(usbCommsInitialize()))
-        fatalSimple(0xBEEA);
+        fatalThrow(0xBEEA);
 
     // We initialize this inside ui_networkinstall_mode for normal users.
     #ifdef NXLINK_DEBUG

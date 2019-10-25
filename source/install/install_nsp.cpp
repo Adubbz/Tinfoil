@@ -55,7 +55,7 @@ namespace tin::install::nsp
         consoleUpdate(NULL);
     }
 
-    void NSPInstallTask::InstallNCA(const NcmNcaId &ncaId)
+    void NSPInstallTask::InstallNCA(const NcmContentId &ncaId)
     {
         std::string ncaName = tin::util::GetNcaIdString(ncaId);
 

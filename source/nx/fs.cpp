@@ -79,7 +79,7 @@ namespace nx::fs
 
     Result IFileSystem::OpenSdFileSystem()
     {
-        ASSERT_OK(fsMountSdcard(&m_fileSystem), "Failed to mount sd card");
+        ASSERT_OK(fsOpenSdCardFileSystem(&m_fileSystem), "Failed to mount sd card");
         return 0;
     }
 

@@ -18,7 +18,7 @@ namespace tin::install::nsp
             RemoteNSP();
 
         public:
-            virtual void StreamToPlaceholder(nx::ncm::ContentStorage& contentStorage, NcmNcaId placeholderId) = 0;
+            virtual void StreamToPlaceholder(nx::ncm::ContentStorage& contentStorage, NcmContentId placeholderId) = 0;
             virtual void BufferData(void* buf, off_t offset, size_t size) = 0;
 
             virtual void RetrieveHeader();
@@ -27,7 +27,7 @@ namespace tin::install::nsp
 
             virtual const PFS0FileEntry* GetFileEntry(unsigned int index);
             virtual const PFS0FileEntry* GetFileEntryByName(std::string name);
-            virtual const PFS0FileEntry* GetFileEntryByNcaId(const NcmNcaId& ncaId);
+            virtual const PFS0FileEntry* GetFileEntryByNcaId(const NcmContentId& ncaId);
             virtual const PFS0FileEntry* GetFileEntryByExtension(std::string extension);
 
             virtual const char* GetFileEntryName(const PFS0FileEntry* fileEntry);

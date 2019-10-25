@@ -10,8 +10,8 @@ namespace tin::util
     u64 GetRightsIdTid(RightsId rightsId);
     u64 GetRightsIdKeyGen(RightsId rightsId);
 
-    std::string GetNcaIdString(const NcmNcaId& ncaId);
-    NcmNcaId GetNcaIdFromString(std::string ncaIdStr);
+    std::string GetNcaIdString(const NcmContentId& ncaId);
+    NcmContentId GetNcaIdFromString(std::string ncaIdStr);
 
     u64 GetBaseTitleId(u64 titleId, NcmContentMetaType contentMetaType);
     std::string GetBaseTitleName(u64 baseTitleId);

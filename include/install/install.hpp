@@ -33,7 +33,7 @@ namespace tin::install
             virtual void InstallContentMetaRecords(tin::data::ByteBuffer& installContentMetaBuf);
             virtual void InstallApplicationRecord();
             virtual void InstallTicketCert() = 0;
-            virtual void InstallNCA(const NcmNcaId &ncaId) = 0;
+            virtual void InstallNCA(const NcmContentId &ncaId) = 0;
 
         public:
             virtual void Prepare();

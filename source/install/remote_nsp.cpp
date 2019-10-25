@@ -76,7 +76,7 @@ namespace tin::install::nsp
         return nullptr;
     }
 
-    const PFS0FileEntry* RemoteNSP::GetFileEntryByNcaId(const NcmNcaId& ncaId)
+    const PFS0FileEntry* RemoteNSP::GetFileEntryByNcaId(const NcmContentId& ncaId)
     {
         const PFS0FileEntry* fileEntry = nullptr;
         std::string ncaIdStr = tin::util::GetNcaIdString(ncaId);
