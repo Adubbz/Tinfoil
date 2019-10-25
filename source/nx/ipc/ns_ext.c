@@ -83,7 +83,7 @@ Result nsListApplicationRecordContentMeta(u64 offset, u64 titleID, void *out_buf
     } out;
 
     Result rc = serviceDispatchInOut(&g_nsAppManSrv, 17, in, out,
-        .buffer_attrs = { SfBufferAttr_HipcMapAlias | SfBufferAttr_In },
+        .buffer_attrs = { SfBufferAttr_HipcMapAlias | SfBufferAttr_Out },
         .buffers = { { out_buf, out_buf_size } });
     
     if (R_SUCCEEDED(rc) && entries_read_out) *entries_read_out = out.entries_read;
