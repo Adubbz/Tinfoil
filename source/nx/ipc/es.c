@@ -42,7 +42,14 @@ Result esDeleteTicket(const RightsId *rightsIdBuf, size_t bufSize) {
 }
 
 Result esGetTitleKey(const RightsId *rightsId, u8 *outBuf, size_t bufSize) {
-    return serviceDispatchIn(&g_esSrv, 8, *rightsId,
+    struct {
+        RightsId rights_Id;
+        u32 key_generation;
+    } in;
+    memcpy(&in.rights_Id, rightsId, sizeof(RightsId));
+    in.key_generation = 0;
+
+    return serviceDispatchIn(&g_esSrv, 8, in,
         .buffer_attrs = { SfBufferAttr_HipcMapAlias | SfBufferAttr_Out },
         .buffers = { { outBuf, bufSize } },
     );
@@ -100,10 +107,15 @@ Result esListPersonalizedTicket(u32 *numRightsIdsWritten, RightsId *outBuf, size
 
 Result esGetCommonTicketData(u64 *unkOut, void *outBuf1, size_t bufSize1, const RightsId* rightsId) {
     struct {
+        RightsId rights_id;
+    } in;
+    memcpy(&in.rights_id, rightsId, sizeof(RightsId));
+    
+    struct {
         u64 unk;
     } out;
 
-    Result rc = serviceDispatchInOut(&g_esSrv, 16, rightsId, out,
+    Result rc = serviceDispatchInOut(&g_esSrv, 16, in, out,
         .buffer_attrs = { SfBufferAttr_HipcMapAlias | SfBufferAttr_Out },
         .buffers = { { outBuf1, bufSize1 } },
     );
