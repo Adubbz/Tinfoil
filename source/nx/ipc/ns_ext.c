@@ -154,7 +154,8 @@ Result nsGetContentMetaStorage(const NcmContentMetaKey *record, u8 *storageOut) 
 
     struct {
         NcmContentMetaKey metaRecord;
-    } in = { *record };
+    } in;
+    memcpy(&in.metaRecord, record, sizeof(NcmContentMetaKey));
 
     struct {
         u8 out;
