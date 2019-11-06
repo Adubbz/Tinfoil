@@ -268,19 +268,52 @@ namespace tin::ui
                     
         for (auto& url : m_urls)
         {
-            tin::install::nsp::HTTPNSP httpNSP(url);
+            try {
+                tin::install::nsp::HTTPNSP httpNSP(url);
 
-            printf("%s %s\n", translate(Translate::NSP_INSTALL_FROM), url.c_str());
-            tin::install::nsp::RemoteNSPInstall install(m_destStorageId, Options().GetIgnoreFirmwareVersion(), &httpNSP);
+                printf("%s %s\n", translate(Translate::NSP_INSTALL_FROM), url.c_str());
+                tin::install::nsp::RemoteNSPInstall install(m_destStorageId, Options().GetIgnoreFirmwareVersion(), &httpNSP);
 
-            printf("%s\n", translate(Translate::NSP_INSTALL_PREPARING));
-            install.Prepare();
-            LOG_DEBUG("Pre Install Records: \n");
-            install.DebugPrintInstallData();
-            install.Begin();
-            LOG_DEBUG("Post Install Records: \n");
-            install.DebugPrintInstallData();
-            printf("\n");
+                printf("%s\n", translate(Translate::NSP_INSTALL_PREPARING));
+                install.Prepare();
+                LOG_DEBUG("Pre Install Records: \n");
+                install.DebugPrintInstallData();
+
+                if (!install.VerifyContent())
+                {
+                    printf(CONSOLE_RED "\nTHIS NSP DOESN'T CONTAIN VALID NCA's!\n\nPress B to cancel the install, A to continue.\n");
+                    consoleUpdate(NULL);
+                    printf(CONSOLE_WHITE);
+                    while(true)
+                    {
+                        hidScanInput();
+                        u64 kDown = hidKeysDown(CONTROLLER_P1_AUTO);
+                        if (kDown & KEY_B)
+                            throw std::runtime_error("install abort!");
+                        if (kDown & KEY_A)
+                            break;
+                    }
+                }
+                else
+                {
+                    printf(CONSOLE_GREEN "Valid Signature!\n");
+                    consoleUpdate(NULL);
+                }
+                printf(CONSOLE_WHITE);
+
+                install.Begin();
+                LOG_DEBUG("Post Install Records: \n");
+                install.DebugPrintInstallData();
+                printf("\n");
+            }
+            catch (std::exception& e)
+            {
+                printf("%s\n", translate(Translate::NSP_INSTALL_FAILED));
+                LOG_DEBUG("Failed to install NSP");
+                LOG_DEBUG("%s", e.what());
+                fprintf(stdout, "%s", e.what());
+                break;
+            }
         }
 
         printf("%s\n", translate(Translate::NSP_INSTALL_NETWORK_SENDING_ACK));

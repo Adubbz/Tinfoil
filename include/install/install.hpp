@@ -15,6 +15,14 @@ extern "C"
 #include "nx/content_meta.hpp"
 #include "nx/ipc/tin_ipc.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+    #include <nca.h>
+#ifdef __cplusplus
+}
+#endif
+
 namespace tin::install
 {
     class Install
@@ -33,9 +41,9 @@ namespace tin::install
             virtual void InstallContentMetaRecords(tin::data::ByteBuffer& installContentMetaBuf);
             virtual void InstallApplicationRecord();
             virtual void InstallTicketCert() = 0;
-            virtual bool VerifyNCA(const NcmContentId &ncaId) = 0;
+            virtual void GetBuffer(const NcmContentId &ncaId, void * out_header, size_t offset, size_t size) = 0;
+            virtual bool VerifyNCA(const NcmContentId &ncaId, nca_ctx_t *nca_ctx);
             virtual void InstallNCA(const NcmContentId &ncaId) = 0;
-
         public:
             virtual void Prepare();
             virtual void Begin();

@@ -21,6 +21,8 @@ namespace tin::install::nsp
             virtual void StreamToPlaceholder(nx::ncm::ContentStorage& contentStorage, NcmContentId placeholderId) = 0;
             virtual void BufferData(void* buf, off_t offset, size_t size) = 0;
 
+            virtual void NCABufferData(const NcmContentId& ncaId, void* buf, off_t offset, size_t size);
+
             virtual void RetrieveHeader();
             virtual const PFS0BaseHeader* GetBaseHeader();
             virtual u64 GetDataOffset();

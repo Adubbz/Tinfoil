@@ -113,4 +113,13 @@ namespace tin::install::nsp
 
         return m_headerBytes.size();
     }
+
+    void RemoteNSP::NCABufferData(const NcmContentId& contentId, void* buf, off_t offset, size_t size)
+    {
+        const PFS0FileEntry* fileEntry = this->GetFileEntryByNcaId(contentId);
+
+        u64 nspOffset = this->GetDataOffset() + fileEntry->dataOffset + offset;
+
+        this->BufferData(buf, nspOffset, size);
+    }
 }

@@ -148,11 +148,12 @@ namespace tin::ui
                         if (kDown & KEY_A)
                             break;
                     }
-                } else {
+                }
+                else
+                {
                     printf(CONSOLE_GREEN "Valid Signature!\n");
                     consoleUpdate(NULL);
                 }
-
                 printf(CONSOLE_WHITE);
 
                 std::stringstream ss;
