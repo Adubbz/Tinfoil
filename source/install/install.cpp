@@ -8,6 +8,10 @@
 #include "nx/ncm.hpp"
 #include "util/title_util.hpp"
 
+#include <nca.h>
+#include <pki.h>
+#include <extkeys.h>
+#include <rsa.h>
 
 // TODO: Check NCA files are present
 // TODO: Check tik/cert is present
@@ -167,6 +171,23 @@ namespace tin::install
     NcmContentMetaType Install::GetContentMetaType()
     {
         return static_cast<NcmContentMetaType>(m_contentMeta.GetContentMetaKey().type);
+    }
+
+    bool Install::VerifyContent() {
+        printf("Verifying NCAs...\n");
+        consoleUpdate(NULL);
+        for (auto& record : m_contentMeta.GetContentInfos())
+        {
+            LOG_DEBUG("Verifying %s\n", tin::util::GetNcaIdString(record.content_id).c_str());
+            consoleUpdate(NULL);
+            try {
+                if (!this->VerifyNCA(record.content_id))
+                    return false;
+            } catch (...) {}
+        }
+
+        LOG_DEBUG("NCA's appear fine\n");
+        return true;
     }
 
     void Install::DebugPrintInstallData()

@@ -134,6 +134,27 @@ namespace tin::ui
                 LOG_DEBUG("Pre Install Records: \n");
                 task.DebugPrintInstallData();
 
+                if (!task.VerifyContent())
+                {
+                    printf(CONSOLE_RED "\nTHIS NSP DOESN'T CONTAIN VALID NCA's!\n\nPress B to cancel the install, A to continue.\n");
+                    consoleUpdate(NULL);
+                    printf(CONSOLE_WHITE);
+                    while(true)
+                    {
+                        hidScanInput();
+                        u64 kDown = hidKeysDown(CONTROLLER_P1_AUTO);
+                        if (kDown & KEY_B)
+                            throw std::runtime_error("install abort!");
+                        if (kDown & KEY_A)
+                            break;
+                    }
+                } else {
+                    printf(CONSOLE_GREEN "Valid Signature!\n");
+                    consoleUpdate(NULL);
+                }
+
+                printf(CONSOLE_WHITE);
+
                 std::stringstream ss;
                 ss << translate(Translate::NSP_INSTALLING) << " " << tin::util::GetTitleName(task.GetTitleId(), task.GetContentMetaType()) << " (" << (i + 1) << "/" << installList.size() << ")";
                 manager.m_printConsole->flags |= CONSOLE_COLOR_BOLD;

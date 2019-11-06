@@ -65,7 +65,7 @@ CXXFLAGS	:= $(CFLAGS) -fno-rtti -std=gnu++17 $(CXXFLAGS)
 ASFLAGS	:=	-g $(ARCH)
 LDFLAGS	=	-specs=$(DEVKITPRO)/libnx/switch.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
-LIBS	:= `freetype-config --libs` -lcurl -lmbedtls -lmbedx509 -lmbedcrypto -lz -lnx
+LIBS	:= `freetype-config --libs` -lcurl -lhactool -lmbedtls -lmbedx509 -lmbedcrypto -lz -lnx
 
 
 
@@ -73,7 +73,7 @@ LIBS	:= `freetype-config --libs` -lcurl -lmbedtls -lmbedx509 -lmbedcrypto -lz -l
 # list of directories containing libraries, this must be the top level containing
 # include and lib
 #---------------------------------------------------------------------------------
-LIBDIRS	:= $(PORTLIBS) $(LIBNX)
+LIBDIRS	:= $(PORTLIBS) $(LIBNX) $(CURDIR)/../hactool/dist
 
 
 #---------------------------------------------------------------------------------

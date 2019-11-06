@@ -44,6 +44,16 @@ namespace tin::install::nsp
         return { tin::util::GetContentMetaFromNCA(cnmtNCAFullPath), cnmtContentInfo };
     }
 
+    bool RemoteNSPInstall::VerifyNCA(const NcmContentId& ncaId)
+    {
+        const PFS0FileEntry* fileEntry = m_remoteNSP->GetFileEntryByNcaId(ncaId);
+        std::string ncaFileName = m_remoteNSP->GetFileEntryName(fileEntry);
+
+        printf("Verifiying %s", ncaFileName.c_str());
+
+        return false;
+    }
+
     void RemoteNSPInstall::InstallNCA(const NcmContentId& ncaId)
     {
         const PFS0FileEntry* fileEntry = m_remoteNSP->GetFileEntryByNcaId(ncaId);

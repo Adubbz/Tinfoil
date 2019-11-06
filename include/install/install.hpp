@@ -33,6 +33,7 @@ namespace tin::install
             virtual void InstallContentMetaRecords(tin::data::ByteBuffer& installContentMetaBuf);
             virtual void InstallApplicationRecord();
             virtual void InstallTicketCert() = 0;
+            virtual bool VerifyNCA(const NcmContentId &ncaId) = 0;
             virtual void InstallNCA(const NcmContentId &ncaId) = 0;
 
         public:
@@ -41,6 +42,7 @@ namespace tin::install
 
             virtual u64 GetTitleId();
             virtual NcmContentMetaType GetContentMetaType();
+            virtual bool VerifyContent();
 
             virtual void DebugPrintInstallData();
     };
