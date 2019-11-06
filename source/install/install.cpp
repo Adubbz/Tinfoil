@@ -161,7 +161,7 @@ namespace tin::install
 
     u64 Install::GetTitleId()
     {
-        return m_contentMeta.GetContentMetaKey().title_id;
+        return m_contentMeta.GetContentMetaKey().id;
     }
 
     NcmContentMetaType Install::GetContentMetaType()
@@ -175,7 +175,7 @@ namespace tin::install
 
         NcmContentMetaDatabase contentMetaDatabase;
         NcmContentMetaKey metaRecord = m_contentMeta.GetContentMetaKey();
-        u64 baseTitleId = tin::util::GetBaseTitleId(metaRecord.title_id, static_cast<NcmContentMetaType>(metaRecord.type));
+        u64 baseTitleId = tin::util::GetBaseTitleId(metaRecord.id, static_cast<NcmContentMetaType>(metaRecord.type));
         u64 updateTitleId = baseTitleId ^ 0x800;
         bool hasUpdate = true;
 

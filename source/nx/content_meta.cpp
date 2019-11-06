@@ -33,7 +33,7 @@ namespace nx::ncm
         PackagedContentMetaHeader contentMetaHeader = this->GetPackagedContentMetaHeader();
 
         memset(&metaRecord, 0, sizeof(NcmContentMetaKey));
-        metaRecord.title_id = contentMetaHeader.title_id;
+        metaRecord.id = contentMetaHeader.title_id;
         metaRecord.version = contentMetaHeader.version;
         metaRecord.type = static_cast<NcmContentMetaType>(contentMetaHeader.type);
 

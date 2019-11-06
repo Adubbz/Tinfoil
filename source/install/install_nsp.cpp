@@ -76,7 +76,7 @@ namespace tin::install::nsp
         // Attempt to delete any leftover placeholders
         try
         {
-            contentStorage.DeletePlaceholder(ncaId);
+            contentStorage.DeletePlaceholder(*(NcmPlaceHolderId*)&ncaId);
         }
         catch (...) {}
 
@@ -90,7 +90,7 @@ namespace tin::install::nsp
             throw std::runtime_error(("Failed to allocate read buffer for " + ncaName).c_str());
 
         LOG_DEBUG("Size: 0x%lx\n", ncaSize);
-        contentStorage.CreatePlaceholder(ncaId, ncaId, ncaSize);
+        contentStorage.CreatePlaceholder(*(NcmPlaceHolderId*)&ncaId, ncaId, ncaSize);
                 
         float progress;
 
@@ -107,7 +107,7 @@ namespace tin::install::nsp
             if (fileOff + readSize >= ncaSize) readSize = ncaSize - fileOff;
 
             ncaFile.Read(fileOff, readBuffer.get(), readSize);
-            contentStorage.WritePlaceholder(ncaId, fileOff, readBuffer.get(), readSize);
+            contentStorage.WritePlaceholder(*(NcmPlaceHolderId*)&ncaId, fileOff, readBuffer.get(), readSize);
             fileOff += readSize;
             consoleUpdate(NULL);
         }
@@ -118,7 +118,7 @@ namespace tin::install::nsp
         
         try
         {
-            contentStorage.Register(ncaId, ncaId);
+            contentStorage.Register(*(NcmPlaceHolderId*)&ncaId, ncaId);
         }
         catch (...)
         {
@@ -127,7 +127,7 @@ namespace tin::install::nsp
 
         try
         {
-            contentStorage.DeletePlaceholder(ncaId);
+            contentStorage.DeletePlaceholder(*(NcmPlaceHolderId*)&ncaId);
         }
         catch (...) {}
 

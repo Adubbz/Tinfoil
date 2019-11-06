@@ -13,22 +13,22 @@ namespace nx::ncm
         serviceClose(&m_contentStorage.s);
     }
 
-    void ContentStorage::CreatePlaceholder(const NcmContentId &placeholderId, const NcmContentId &registeredId, size_t size)
+    void ContentStorage::CreatePlaceholder(const NcmPlaceHolderId &placeholderId, const NcmContentId &registeredId, size_t size)
     {
-        ASSERT_OK(ncmContentStorageCreatePlaceHolder(&m_contentStorage, &placeholderId, &registeredId, size), "Failed to create placeholder");
+        ASSERT_OK(ncmContentStorageCreatePlaceHolder(&m_contentStorage, &registeredId, &placeholderId, size), "Failed to create placeholder");
     }
             
-    void ContentStorage::DeletePlaceholder(const NcmContentId &placeholderId)
+    void ContentStorage::DeletePlaceholder(const NcmPlaceHolderId &placeholderId)
     {
         ASSERT_OK(ncmContentStorageDeletePlaceHolder(&m_contentStorage, &placeholderId), "Failed to delete placeholder");
     }
 
-    void ContentStorage::WritePlaceholder(const NcmContentId &placeholderId, u64 offset, void *buffer, size_t bufSize)
+    void ContentStorage::WritePlaceholder(const NcmPlaceHolderId &placeholderId, u64 offset, void *buffer, size_t bufSize)
     {
         ASSERT_OK(ncmContentStorageWritePlaceHolder(&m_contentStorage, &placeholderId, offset, buffer, bufSize), "Failed to write to placeholder");
     }
 
-    void ContentStorage::Register(const NcmContentId &placeholderId, const NcmContentId &registeredId)
+    void ContentStorage::Register(const NcmPlaceHolderId &placeholderId, const NcmContentId &registeredId)
     {
         ASSERT_OK(ncmContentStorageRegister(&m_contentStorage, &registeredId, &placeholderId), "Failed to register placeholder NCA");
     }

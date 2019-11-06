@@ -87,7 +87,7 @@ namespace tin::data
         // NOTE: The final segment will have leftover data from previous writes, however
         // this will be accounted for by this size
         size_t sizeToWriteToPlaceholder = std::min(m_totalDataSize - m_sizeWrittenToPlaceholder, BUFFER_SEGMENT_DATA_SIZE);
-        m_contentStorage->WritePlaceholder(m_ncaId, m_sizeWrittenToPlaceholder, m_currentSegmentToWritePtr->data, sizeToWriteToPlaceholder);
+        m_contentStorage->WritePlaceholder(*(NcmPlaceHolderId*)&m_ncaId, m_sizeWrittenToPlaceholder, m_currentSegmentToWritePtr->data, sizeToWriteToPlaceholder);
 
         m_currentSegmentToWritePtr->isFinalized = false;
         m_currentSegmentToWritePtr->writeOffset = 0;

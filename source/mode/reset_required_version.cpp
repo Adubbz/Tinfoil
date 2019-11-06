@@ -36,7 +36,7 @@ namespace tin::ui
 
             for (s32 i = 0; i < entriesRead; i++)
             {
-                view->AddEntry(std::make_unique<TitleIdOptionValue>(records[i].titleID), tin::ui::ConsoleEntrySelectType::SELECT, std::bind(&ResetRequiredVersionMode::OnTitleIdSelected, this));
+                view->AddEntry(std::make_unique<TitleIdOptionValue>(records[i].application_id), tin::ui::ConsoleEntrySelectType::SELECT, std::bind(&ResetRequiredVersionMode::OnTitleIdSelected, this));
             }
 
             offset += entriesRead;
